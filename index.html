@@ -1,21 +1,3 @@
-const firebaseConfig = {
-  apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
-  authDomain: "media-e9cab.firebaseapp.com",
-  projectId: "media-e9cab",
-  storageBucket: "media-e9cab.firebasestorage.app",
-  messagingSenderId: "1011555810702",
-  appId: "1:1011555810702:web:0c3dcd3816cecd8ccaf8df",
-  measurementId: "G-RFPQWN51Z5"
-};
-```[cite: 1]
-
----
-
-### 💻 الكود النهائي المحدث والمربوط تماماً **بهذه القاعدة الأصلية** (مع دعم تسجيل الدخول بالرمز السريع، رفع الصور، الأرشيف، حقوقك **sulaiman alnasiri**، ورؤية 2030):
-
-قم بنسخ هذا الكود بالكامل واستبداله بملف `index.html` في GitHub:
-
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -34,7 +16,6 @@ const firebaseConfig = {
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // إعدادات القاعدة الخاصة بك تماماً كما أرفقتها
         const firebaseConfig = {
             apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
             authDomain: "media-e9cab.firebaseapp.com",
@@ -51,7 +32,6 @@ const firebaseConfig = {
         window.dbRef = ref;
         window.dbSet = set;
 
-        // مزامنة البيانات مع Firebase Realtime Database
         onValue(ref(db, 'siteData'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
@@ -141,7 +121,6 @@ const firebaseConfig = {
 
         <!-- TAB 2: بوابة الأعضاء -->
         <section id="tab-employee" class="hidden space-y-6">
-            <!-- تسجيل الدخول بالرمز السريع فقط أو اسم المستخدم لأول مرة -->
             <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
                 <p class="text-xs text-slate-500 text-center">أدخل اسم المستخدم (لأول مرة) أو رمز الدخول السريع مباشرة</p>
@@ -156,7 +135,6 @@ const firebaseConfig = {
                 <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
             </div>
 
-            <!-- تعيين الرمز السريع -->
             <div id="setQuickPinModal" class="hidden max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <div class="text-center space-y-2">
                     <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-key"></i></div>
@@ -170,7 +148,6 @@ const firebaseConfig = {
                 <button onclick="saveUserQuickPin()" class="w-full bg-amber-600 text-white py-2 rounded-lg font-bold hover:bg-amber-700">حفظ الرمز والدخول</button>
             </div>
 
-            <!-- لوحة الموظف الشخصية -->
             <div id="empDashboard" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl border border-slate-200 flex justify-between items-center">
                     <div>
@@ -227,7 +204,6 @@ const firebaseConfig = {
                     <button onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg">خروج</button>
                 </div>
 
-                <!-- التحكم بأسماء الواجهة واللوجو والمظهر -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-sliders text-sky-600 ml-2"></i>التحكم بأسماء الواجهة والشعار (رفع صورة)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -262,7 +238,6 @@ const firebaseConfig = {
                     <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ التغييرات والتحديث</button>
                 </div>
 
-                <!-- إضافة / تعديل الأعضاء مع رفع الصورة -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -279,7 +254,6 @@ const firebaseConfig = {
                     <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
                 </div>
 
-                <!-- لوحة سجل الأعضاء الشامل -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-database text-sky-600 ml-2"></i>سجل الأعضاء المسجلين الشامل (الأرشيف الكامل)</h3>
                     <div class="overflow-x-auto">
@@ -301,7 +275,6 @@ const firebaseConfig = {
                     </div>
                 </div>
 
-                <!-- التحكم بحسابات التواصل الاجتماعي -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-share-nodes text-sky-600 ml-2"></i>إدارة حسابات التواصل الاجتماعي بالصفحة الرئيسية</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -312,7 +285,6 @@ const firebaseConfig = {
                     <div id="adminSocialList" class="flex flex-wrap gap-2 text-xs"></div>
                 </div>
 
-                <!-- المهمات والرسائل والملاحظات -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-6 rounded-xl border space-y-3">
                         <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إسناد مهمة جديدة</h3>
