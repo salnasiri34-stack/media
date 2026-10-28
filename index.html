@@ -1,3 +1,21 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
+  authDomain: "media-e9cab.firebaseapp.com",
+  projectId: "media-e9cab",
+  storageBucket: "media-e9cab.firebasestorage.app",
+  messagingSenderId: "1011555810702",
+  appId: "1:1011555810702:web:0c3dcd3816cecd8ccaf8df",
+  measurementId: "G-RFPQWN51Z5"
+};
+```[cite: 1]
+
+---
+
+### 💻 الكود النهائي المحدث والمربوط تماماً **بهذه القاعدة الأصلية** (مع دعم تسجيل الدخول بالرمز السريع، رفع الصور، الأرشيف، حقوقك **sulaiman alnasiri**، ورؤية 2030):
+
+قم بنسخ هذا الكود بالكامل واستبداله بملف `index.html` في GitHub:
+
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -11,11 +29,12 @@
     <!-- Google Font Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK -->
+    <!-- Firebase SDK (Modular via CDN) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
+        // إعدادات القاعدة الخاصة بك تماماً كما أرفقتها
         const firebaseConfig = {
             apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
             authDomain: "media-e9cab.firebaseapp.com",
@@ -31,8 +50,20 @@
         window.db = db;
         window.dbRef = ref;
         window.dbSet = set;
-        window.dbOnValue = onValue;
-        window.dbPush = push;
+
+        // مزامنة البيانات مع Firebase Realtime Database
+        onValue(ref(db, 'siteData'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                siteData = data;
+                renderPublicTeam();
+                renderSocialLinks();
+                updateSiteHeaderUI();
+                if(document.getElementById('adminDashboard') && !document.getElementById('adminDashboard').classList.contains('hidden')) {
+                    renderAdminData();
+                }
+            }
+        });
     </script>
 
     <style>
@@ -110,7 +141,7 @@
 
         <!-- TAB 2: بوابة الأعضاء -->
         <section id="tab-employee" class="hidden space-y-6">
-            <!-- تسجيل الدخول (يدعم الدخول بالرمز السريع المباشر أو اسم المستخدم لأول مرة) -->
+            <!-- تسجيل الدخول بالرمز السريع فقط أو اسم المستخدم لأول مرة -->
             <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
                 <p class="text-xs text-slate-500 text-center">أدخل اسم المستخدم (لأول مرة) أو رمز الدخول السريع مباشرة</p>
@@ -125,7 +156,7 @@
                 <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
             </div>
 
-            <!-- تعيين الرمز السريع (يظهر تلقائياً إذا لم يعينه العضو بعد) -->
+            <!-- تعيين الرمز السريع -->
             <div id="setQuickPinModal" class="hidden max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <div class="text-center space-y-2">
                     <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-key"></i></div>
@@ -231,7 +262,7 @@
                     <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ التغييرات والتحديث</button>
                 </div>
 
-                <!-- إضافة / تعديل الأعضاء مع إمكانية رفع الصورة من المعرض -->
+                <!-- إضافة / تعديل الأعضاء مع رفع الصورة -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
@@ -248,7 +279,7 @@
                     <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
                 </div>
 
-                <!-- لوحة سجل الأعضاء المسجلين الشامل -->
+                <!-- لوحة سجل الأعضاء الشامل -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-database text-sky-600 ml-2"></i>سجل الأعضاء المسجلين الشامل (الأرشيف الكامل)</h3>
                     <div class="overflow-x-auto">
@@ -420,19 +451,13 @@
             publicFeedback: []
         };
 
-        function loadSavedState() {
-            const saved = localStorage.getItem('sulaiman_media_platform_data');
-            if(saved) {
-                try { siteData = JSON.parse(saved); } catch(e){}
+        function saveDataToFirebase() {
+            if(window.db && window.dbRef && window.dbSet) {
+                window.dbSet(window.dbRef(window.db, 'siteData'), siteData);
             }
         }
 
-        function saveState() {
-            localStorage.setItem('sulaiman_media_platform_data', JSON.stringify(siteData));
-        }
-
         window.onload = function() {
-            loadSavedState();
             renderPublicTeam();
             renderSocialLinks();
             updateSiteHeaderUI();
@@ -463,6 +488,7 @@
 
         function renderPublicTeam() {
             const grid = document.getElementById('publicTeamGrid');
+            if(!grid) return;
             if(!siteData.employees.length) {
                 grid.innerHTML = '<p class="text-slate-400 text-xs">لا يوجد أعضاء حالياً</p>';
                 return;
@@ -484,7 +510,8 @@
 
         function renderSocialLinks() {
             const container = document.getElementById('socialLinksContainer');
-            container.innerHTML = siteData.socials.map(s => `
+            if(!container) return;
+            container.innerHTML = (siteData.socials || []).map(s => `
                 <a href="${s.url}" target="_blank" class="bg-slate-900 text-white hover:bg-sky-600 px-4 py-2 rounded-xl transition flex items-center space-x-2 space-x-reverse font-semibold">
                     <i class="fa-solid fa-link"></i>
                     <span>${s.name}</span>
@@ -507,17 +534,14 @@
             }
         }
 
-        // تسجيل الدخول (يدعم الدخول بالرمز السريع فقط مباشرة بعد أول تسجيل، أو باسم المستخدم لأول مرة)
         function loginEmp() {
             const u = document.getElementById('empUsername').value.trim();
             const p = document.getElementById('empPass').value.trim();
             
             let emp = null;
             if(u !== "") {
-                // إذا كتب اسم المستخدم (أو في المرة الأولى)
                 emp = siteData.employees.find(e => e.username === u && (e.pass === p || e.quickPin === p));
             } else {
-                // إذا ترك اسم المستخدم فارغاً ودخل مباشرة عبر "رمز الدخول السريع"
                 emp = siteData.employees.find(e => e.quickPin === p);
             }
 
@@ -551,7 +575,7 @@
             if(!pin) return alert('يرجى إدخال رمز الدخول السريع');
             if(tempLoginUser) {
                 tempLoginUser.quickPin = pin;
-                saveState();
+                saveDataToFirebase();
                 alert('تم حفظ رمز الدخول السريع بنجاح! من الآن فصاعداً يمكنك الدخول به مباشرة دون اسم المستخدم.');
                 currentEmp = tempLoginUser;
                 tempLoginUser = null;
@@ -581,18 +605,19 @@
 
         function renderEmpData() {
             if(!currentEmp) return;
-            const empTasks = siteData.tasks.filter(t => t.empUsername === currentEmp.username);
+            const empTasks = (siteData.tasks || []).filter(t => t.empUsername === currentEmp.username);
             document.getElementById('empTasksList').innerHTML = empTasks.length ? empTasks.map(t => `<div class="p-2 bg-slate-50 border rounded-lg text-slate-700"><i class="fa-regular fa-square-check text-sky-600 ml-1"></i> ${t.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد مهمات حالية</p>';
 
-            const empNotes = siteData.notes.filter(n => n.empUsername === currentEmp.username);
+            const empNotes = (siteData.notes || []).filter(n => n.empUsername === currentEmp.username);
             document.getElementById('empNotesList').innerHTML = empNotes.length ? empNotes.map(n => `<div class="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-900"><i class="fa-solid fa-triangle-exclamation text-amber-600 ml-1"></i> ${n.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد ملاحظات جديدة</p>';
         }
 
         function recordAttendance() {
             if(!currentEmp) return;
             const now = new Date().toLocaleString('ar-SA');
+            if(!siteData.attendance) siteData.attendance = [];
             siteData.attendance.push({ name: currentEmp.name, role: currentEmp.role, time: now });
-            saveState();
+            saveDataToFirebase();
             document.getElementById('attendStatus').innerText = `تم تسجيل الحضور في: ${now}`;
             renderAdminData();
         }
@@ -600,8 +625,9 @@
         function sendMessageToAdmin() {
             const txt = document.getElementById('msgToAdmin').value.trim();
             if(!txt) return;
+            if(!siteData.messages) siteData.messages = [];
             siteData.messages.push({ sender: currentEmp.name, msg: txt, time: new Date().toLocaleTimeString('ar-SA') });
-            saveState();
+            saveDataToFirebase();
             document.getElementById('msgToAdmin').value = '';
             alert('تم الإرسال إلى لوحة الإدارة');
             renderAdminData();
@@ -612,8 +638,9 @@
             const txt = document.getElementById('publicFeedbackText').value.trim();
             if(!txt) return alert('فضلاً اكتب الملاحظة قبل الإرسال');
 
+            if(!siteData.publicFeedback) siteData.publicFeedback = [];
             siteData.publicFeedback.push({ name, msg: txt, time: new Date().toLocaleString('ar-SA') });
-            saveState();
+            saveDataToFirebase();
             document.getElementById('publicFeedbackText').value = '';
             alert('شكراً لك! تم إرسال ملاحظتك بنجاح.');
             renderAdminData();
@@ -661,22 +688,22 @@
                 </tr>
             `).join('');
 
-            document.getElementById('adminSocialList').innerHTML = siteData.socials.map(s => `
+            document.getElementById('adminSocialList').innerHTML = (siteData.socials || []).map(s => `
                 <div class="bg-slate-100 border px-3 py-1 rounded flex items-center space-x-2 space-x-reverse">
                     <span><b>${s.name}:</b> ${s.url}</span>
                     <button onclick="deleteSocial('${s.id}')" class="text-red-600 font-bold ml-1">×</button>
                 </div>
             `).join('');
 
-            document.getElementById('adminMessagesList').innerHTML = siteData.messages.length ? siteData.messages.map(m => `
+            document.getElementById('adminMessagesList').innerHTML = (siteData.messages || []).length ? siteData.messages.map(m => `
                 <div class="p-2 bg-sky-50 border border-sky-200 rounded"><span class="font-bold text-sky-900">${m.sender}:</span> ${m.msg} <span class="text-[10px] text-slate-400 font-mono">(${m.time})</span></div>
             `).join('') : '<p class="text-slate-400">لا توجد رسائل</p>';
 
-            document.getElementById('adminPublicFeedbackList').innerHTML = siteData.publicFeedback.length ? siteData.publicFeedback.map(f => `
+            document.getElementById('adminPublicFeedbackList').innerHTML = (siteData.publicFeedback || []).length ? siteData.publicFeedback.map(f => `
                 <div class="p-2 bg-amber-50 border border-amber-200 rounded"><span class="font-bold text-amber-900">${f.name}:</span> ${f.msg} <br><span class="text-[10px] text-slate-400 font-mono">(${f.time})</span></div>
             `).join('') : '<p class="text-slate-400">لا توجد ملاحظات</p>';
 
-            document.getElementById('adminAttendanceList').innerHTML = siteData.attendance.length ? siteData.attendance.map(a => `
+            document.getElementById('adminAttendanceList').innerHTML = (siteData.attendance || []).length ? siteData.attendance.map(a => `
                 <div class="p-2 bg-emerald-50 border border-emerald-200 rounded"><span class="font-bold">${a.name}</span> (${a.role}) - <span class="text-[10px] text-emerald-700">${a.time}</span></div>
             `).join('') : '<p class="text-slate-400">لا يوجد حضور مسجل</p>';
         }
@@ -704,7 +731,7 @@
                 cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` 
             });
 
-            saveState();
+            saveDataToFirebase();
             renderAdminData();
             renderPublicTeam();
             alert('تمت إضافة العضو بنجاح!');
@@ -712,7 +739,7 @@
 
         function deleteEmp(id) {
             siteData.employees = siteData.employees.filter(e => e.id !== id);
-            saveState();
+            saveDataToFirebase();
             renderAdminData();
             renderPublicTeam();
         }
@@ -722,17 +749,18 @@
             const url = document.getElementById('newSocialUrl').value.trim();
             if(!name || !url) return alert('أدخل الاسم والرابط');
 
+            if(!siteData.socials) siteData.socials = [];
             siteData.socials.push({ id: Date.now().toString(), name, url });
             document.getElementById('newSocialName').value = '';
             document.getElementById('newSocialUrl').value = '';
-            saveState();
+            saveDataToFirebase();
             renderSocialLinks();
             renderAdminData();
         }
 
         function deleteSocial(id) {
             siteData.socials = siteData.socials.filter(s => s.id !== id);
-            saveState();
+            saveDataToFirebase();
             renderSocialLinks();
             renderAdminData();
         }
@@ -741,9 +769,10 @@
             const empUsername = document.getElementById('assignTaskEmp').value;
             const desc = document.getElementById('newTaskDesc').value.trim();
             if(!desc) return;
+            if(!siteData.tasks) siteData.tasks = [];
             siteData.tasks.push({ id: Date.now().toString(), empUsername, desc });
             document.getElementById('newTaskDesc').value = '';
-            saveState();
+            saveDataToFirebase();
             alert('تم إسناد المهمة');
         }
 
@@ -751,9 +780,10 @@
             const empUsername = document.getElementById('assignNoteEmp').value;
             const desc = document.getElementById('newNoteDesc').value.trim();
             if(!desc) return;
+            if(!siteData.notes) siteData.notes = [];
             siteData.notes.push({ id: Date.now().toString(), empUsername, desc });
             document.getElementById('newNoteDesc').value = '';
-            saveState();
+            saveDataToFirebase();
             alert('تم إرسال الملاحظة');
         }
 
@@ -777,12 +807,13 @@
             const bannerBase64 = await readFileAsBase64(bannerFile);
             if(bannerBase64) siteData.config.bannerImg = bannerBase64;
 
-            saveState();
+            saveDataToFirebase();
             updateSiteHeaderUI();
             alert('تم تحديث إعدادات المنصة بنجاح!');
         }
 
         function updateSiteHeaderUI() {
+            if(!document.getElementById('headerTitle')) return;
             document.getElementById('headerTitle').innerText = siteData.config.title;
             document.getElementById('headerSubtitle').innerText = siteData.config.subtitle;
 
