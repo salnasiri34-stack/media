@@ -47,7 +47,7 @@
     <header class="glass-header text-white sticky top-0 z-50 border-b border-slate-700">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div id="headerLogoContainer" class="bg-sky-600 text-white p-2 rounded-lg font-bold text-xl flex items-center justify-center min-w-[40px] h-[40px]">
+                <div id="headerLogoContainer" class="bg-sky-600 text-white p-2 rounded-lg font-bold text-xl flex items-center justify-center min-w-[40px] h-[40px] overflow-hidden">
                     <i id="headerDefaultIcon" class="fa-solid fa-camera-retro"></i>
                     <img id="headerCustomLogo" src="" class="hidden w-10 h-10 object-cover rounded-lg" alt="Logo">
                 </div>
@@ -57,7 +57,6 @@
                 </div>
             </div>
 
-            <!-- زر البحث العلوي برقم البطاقة + إشارات المستخدم -->
             <div class="flex items-center space-x-2 space-x-reverse">
                 <button onclick="toggleCardSearchModal()" title="البحث برقم البطاقة" class="bg-slate-800 hover:bg-sky-600 text-white p-2 rounded-full border border-slate-700 text-sm transition">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -69,7 +68,7 @@
         </div>
     </header>
 
-    <!-- شريط إعلان في أعلى الواجهة الرئيسي (يمكن تفعيله وتعديله من الأدمن) -->
+    <!-- شريط الإعلان العلوي -->
     <div id="topBanner" class="hidden bg-slate-900 border-b border-sky-500/30 text-white py-3 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-3 space-x-reverse">
@@ -83,7 +82,7 @@
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 
-        <!-- TAB 1: الصفحة الرئيسية (عرض الأعضاء + البانر) -->
+        <!-- TAB 1: الرئيسية -->
         <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-r from-slate-900 to-sky-900 text-white rounded-2xl p-8 shadow-xl text-center md:text-right relative overflow-hidden">
                 <div class="max-w-2xl relative z-10 space-y-4">
@@ -93,20 +92,25 @@
                 </div>
             </div>
 
-            <!-- قسم عرض الأعضاء والفريق -->
+            <!-- عرض الأعضاء -->
             <div class="space-y-4">
                 <div class="flex justify-between items-center border-b pb-2">
                     <h3 class="font-bold text-xl text-slate-800"><i class="fa-solid fa-users text-sky-600 ml-2"></i>فريق العمل والإعلام</h3>
                     <span class="text-xs text-slate-500">نخبة الكوادر الإعلامية</span>
                 </div>
-                <div id="publicTeamGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <!-- يطبع الأعضاء هنا تلقائياً -->
-                </div>
+                <div id="publicTeamGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+            </div>
+
+            <!-- حسابات التواصل الاجتماعي -->
+            <div class="gov-card p-6 rounded-2xl border text-center space-y-4">
+                <h4 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-share-nodes text-sky-600 ml-2"></i>تابعونا على حساباتنا الرسمية</h4>
+                <div id="socialLinksContainer" class="flex flex-wrap justify-center gap-4 text-sm"></div>
             </div>
         </section>
 
-        <!-- TAB 2: بوابة الموظفين -->
+        <!-- TAB 2: بوابة الأعضاء -->
         <section id="tab-employee" class="hidden space-y-6">
+            <!-- تسجيل الدخول -->
             <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
                 <div>
@@ -114,12 +118,27 @@
                     <input type="text" id="empUsername" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold mb-1">رمز الدخول السريع</label>
+                    <label class="block text-xs font-semibold mb-1">كلمة المرور / الرمز السريع</label>
                     <input type="password" id="empPass" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
                 <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
             </div>
 
+            <!-- تعيين الرمز السريع (يظهر تلقائياً إذا لم يعينه العضو بعد) -->
+            <div id="setQuickPinModal" class="hidden max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-key"></i></div>
+                    <h3 class="font-bold text-lg">تعيين رمز الدخول السريع الخاص بك</h3>
+                    <p class="text-xs text-slate-500">فضلاً أنشئ رمز دخول سريع خاص بك لتسجيل الدخول به في المرات القادمة</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">اختر رمز الدخول السريع</label>
+                    <input type="password" id="newQuickPinInput" placeholder="أدخل رمزك الجديد..." class="w-full border rounded-lg px-3 py-2 text-sm text-center font-mono outline-none focus:ring-2 focus:ring-amber-500">
+                </div>
+                <button onclick="saveUserQuickPin()" class="w-full bg-amber-600 text-white py-2 rounded-lg font-bold hover:bg-amber-700">حفظ الرمز والدخول</button>
+            </div>
+
+            <!-- لوحة الموظف الشخصية -->
             <div id="empDashboard" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl border border-slate-200 flex justify-between items-center">
                     <div>
@@ -149,14 +168,14 @@
 
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-paper-plane ml-2"></i>مراسلة الإدارة</h4>
-                        <textarea id="msgToAdmin" placeholder="اكتب استفسارك أو اقتراحك هنا..." class="w-full border rounded-lg p-2 text-xs h-20 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                        <textarea id="msgToAdmin" placeholder="اكتب استفسارك أو اقتراحك..." class="w-full border rounded-lg p-2 text-xs h-20 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                         <button onclick="sendMessageToAdmin()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold text-xs hover:bg-slate-900 mt-2">إرسال للمسؤول</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- TAB 3: لوحة تحكم الأدمن -->
+        <!-- TAB 3: الإدارة العليا -->
         <section id="tab-admin" class="hidden space-y-6">
             <div id="adminLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-shield-halved text-sky-600 ml-2"></i>لوحة التحكم العليا (Admin)</h3>
@@ -171,15 +190,14 @@
                 <div class="bg-slate-900 text-white p-6 rounded-xl flex justify-between items-center">
                     <div>
                         <h2 class="text-xl font-bold">لوحة الإدارة الكاملة (sulaiman alnasiri)</h2>
-                        <p class="text-xs text-slate-400">التحكم الشامل بجميع أدوات المنصة، الصور، الإعلانات، والأعضاء</p>
+                        <p class="text-xs text-slate-400">إدارة الأعضاء، السجلات، الصور، الحسابات والملاحظات العامة</p>
                     </div>
                     <button onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg">خروج</button>
                 </div>
 
-                <!-- التحكم بأسماء وصور الواجهة + الإعلانات العليا -->
+                <!-- التحكم بأسماء الواجهة واللوجو والمظهر -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
-                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-sliders text-sky-600 ml-2"></i>التحكم باسم المنصة، الشعار، والإعلانات</h3>
-                    
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-sliders text-sky-600 ml-2"></i>التحكم بأسماء الواجهة والشعار (رفع صورة)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                         <div>
                             <label class="block font-semibold mb-1">اسم المنصة بالكامل</label>
@@ -190,12 +208,12 @@
                             <input type="text" id="editHeaderSub" class="w-full border rounded p-2">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1">رابط صورة الشعار (Logo URL)</label>
-                            <input type="text" id="editHeaderLogo" placeholder="https://example.com/logo.png" class="w-full border rounded p-2">
+                            <label class="block font-semibold mb-1">رفع صورة اللوجو من المعرض</label>
+                            <input type="file" id="logoFileInput" accept="image/*" class="w-full text-xs">
                         </div>
                     </div>
 
-                    <!-- إعداد الإعلان الأعلى -->
+                    <!-- إعداد الإعلان الأعلى مع اختيار صورة من المعرض -->
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
                         <div class="flex items-center space-x-2 space-x-reverse">
                             <input type="checkbox" id="enableTopBanner" class="w-4 h-4 text-sky-600 rounded">
@@ -203,36 +221,48 @@
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                             <input type="text" id="bannerText" placeholder="نص الإعلان..." class="border rounded p-2">
-                            <input type="text" id="bannerImgUrl" placeholder="رابط صورة الإعلان (URL)..." class="border rounded p-2">
+                            <div>
+                                <label class="block font-semibold mb-1">صورة الإعلان من المعرض</label>
+                                <input type="file" id="bannerFileInput" accept="image/*" class="w-full text-xs">
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ وإعادة التحديث</button>
+                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ التغييرات والتحديث</button>
                 </div>
 
-                <!-- إضافة / تعديل الأعضاء وتخصصاتهم حرّاً -->
+                <!-- إضافة / تعديل الأعضاء مع إمكانية رفع الصورة من المعرض -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
-                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد (مع كتابة التخصص حرّاً)</h3>
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد (مع رفع الصورة مباشرة من المعرض)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                         <input type="text" id="newEmpName" placeholder="الاسم الكامل" class="border rounded p-2">
                         <input type="text" id="newEmpUser" placeholder="اسم المستخدم" class="border rounded p-2">
-                        <input type="text" id="newEmpPass" placeholder="رمز الدخول السريع" class="border rounded p-2">
-                        <input type="text" id="newEmpRole" placeholder="التخصص (مثال: كاتب، مصور، قائد...)" class="border rounded p-2">
-                        <input type="text" id="newEmpPhoto" placeholder="رابط صورة العضو (اختياري URL)" class="border rounded p-2">
-                        <input type="text" id="newEmpCardCode" placeholder="رمز البطاقة (اختياري)" class="border rounded p-2">
+                        <input type="text" id="newEmpPass" placeholder="كلمة المرور المؤقتة" class="border rounded p-2">
+                        <input type="text" id="newEmpRole" placeholder="التخصص" class="border rounded p-2">
+                        <input type="text" id="newEmpCardCode" placeholder="رمز البطاقة" class="border rounded p-2">
+                        <div>
+                            <label class="block font-semibold mb-1 text-slate-500">صورة الشخص (من المعرض)</label>
+                            <input type="file" id="empPhotoFileInput" accept="image/*" class="w-full text-xs">
+                        </div>
                     </div>
                     <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
+                </div>
 
-                    <div class="overflow-x-auto mt-4">
+                <!-- لوحة سجل الأعضاء المسجلين بجميع البيانات والشفرات (الأرشيف الكامل) -->
+                <div class="gov-card p-6 rounded-xl border space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-database text-sky-600 ml-2"></i>سجل الأعضاء المسجلين الشامل (الأرشيف الكامل)</h3>
+                    <div class="overflow-x-auto">
                         <table class="w-full text-xs text-right border-collapse border">
                             <thead>
                                 <tr class="bg-slate-100 border-b">
                                     <th class="p-2 border">الصورة</th>
                                     <th class="p-2 border">الاسم</th>
                                     <th class="p-2 border">اسم المستخدم</th>
+                                    <th class="p-2 border">كلمة المرور</th>
+                                    <th class="p-2 border text-amber-700">الرمز السريع (تعيين العضو)</th>
                                     <th class="p-2 border">التخصص</th>
                                     <th class="p-2 border">رمز البطاقة</th>
-                                    <th class="p-2 border">إجراءات</th>
+                                    <th class="p-2 border">حذف</th>
                                 </tr>
                             </thead>
                             <tbody id="employeesTableBody"></tbody>
@@ -240,34 +270,70 @@
                     </div>
                 </div>
 
-                <!-- المهمات والملاحظات والرسائل -->
+                <!-- التحكم بحسابات التواصل الاجتماعي -->
+                <div class="gov-card p-6 rounded-xl border space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-share-nodes text-sky-600 ml-2"></i>إدارة حسابات التواصل الاجتماعي بالصفحة الرئيسية</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <input type="text" id="newSocialName" placeholder="اسم المنصة (TikTok, Snapchat...)" class="border rounded p-2">
+                        <input type="text" id="newSocialUrl" placeholder="رابط الحساب (https://...)" class="border rounded p-2">
+                        <button onclick="addSocialLink()" class="bg-sky-600 text-white rounded p-2 font-bold">+ إضافة الحساب</button>
+                    </div>
+                    <div id="adminSocialList" class="flex flex-wrap gap-2 text-xs"></div>
+                </div>
+
+                <!-- المهمات والرسائل والملاحظات -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إضافة مهمة جديدة</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إسناد مهمة جديدة</h3>
                         <select id="assignTaskEmp" class="w-full border rounded p-2 text-xs"></select>
                         <textarea id="newTaskDesc" placeholder="تفاصيل المهمة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
                         <button onclick="assignTask()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إسناد المهمة</button>
                     </div>
 
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية لعضو</h3>
                         <select id="assignNoteEmp" class="w-full border rounded p-2 text-xs"></select>
                         <textarea id="newNoteDesc" placeholder="اكتب الملاحظة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
                         <button onclick="assignNote()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إرسال الملاحظة</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-inbox text-sky-600 ml-2"></i>رسائل الأعضاء</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="gov-card p-5 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-inbox text-sky-600 ml-2"></i>رسائل الأعضاء الداخليين</h3>
                         <div id="adminMessagesList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                     </div>
 
-                    <div class="gov-card p-6 rounded-xl border space-y-3">
+                    <div class="gov-card p-5 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comments text-amber-600 ml-2"></i>ملاحظات الزوار والجمهور (القسم الرابع)</h3>
+                        <div id="adminPublicFeedbackList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
+                    </div>
+
+                    <div class="gov-card p-5 rounded-xl border space-y-3">
                         <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-clipboard-user text-sky-600 ml-2"></i>سجل الحضور</h3>
                         <div id="adminAttendanceList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: قسم الملاحظات والآراء العمومي -->
+        <section id="tab-feedback" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto gov-card p-8 rounded-2xl border space-y-4">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-comment-pen"></i></div>
+                    <h3 class="font-bold text-xl text-slate-800">قسم الملاحظات والمقترحات</h3>
+                    <p class="text-xs text-slate-500">يسعدنا استقبال جميع ملاحظاتكم ومقترحاتكم لتطوير منظومة الإعلام المدرسي</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">الاسم (اختياري)</label>
+                    <input type="text" id="publicFeedbackName" placeholder="أدخل اسمك..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">الملاحظة أو الاقتراح</label>
+                    <textarea id="publicFeedbackText" placeholder="اكتب ملاحظتك هنا بكل حرية..." class="w-full border rounded-lg p-3 text-xs h-28 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                </div>
+                <button onclick="submitPublicFeedback()" class="w-full bg-sky-600 text-white py-2.5 rounded-lg font-bold hover:bg-sky-700">إرسال الملاحظة للإدارة</button>
             </div>
         </section>
 
@@ -290,32 +356,35 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar (4 أقسام) -->
     <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-40">
-        <div class="max-w-md mx-auto flex justify-around py-3">
+        <div class="max-w-lg mx-auto flex justify-around py-3">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px]">الرئيسية</span>
             </button>
             <button onclick="switchTab('employee')" id="nav-employee" class="flex flex-col items-center space-y-1 hover:text-sky-400">
                 <i class="fa-solid fa-id-card text-lg"></i>
-                <span class="text-[10px]">بوابة الاعضاء</span>
+                <span class="text-[10px]">بوابة الأعضاء</span>
             </button>
             <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 hover:text-sky-400">
                 <i class="fa-solid fa-user-shield text-lg"></i>
                 <span class="text-[10px]">الإدارة العليا</span>
             </button>
+            <button onclick="switchTab('feedback')" id="nav-feedback" class="flex flex-col items-center space-y-1 hover:text-sky-400">
+                <i class="fa-solid fa-comment-dots text-lg"></i>
+                <span class="text-[10px]">الملاحظات</span>
+            </button>
         </div>
     </nav>
 
-    <!-- Footer مع حقوق sulaiman alnasiri وشعار رؤية 2030 -->
+    <!-- Footer مع حقوق sulaiman alnasiri ورؤية 2030 -->
     <footer class="bg-slate-950 text-slate-500 py-6 text-xs border-t border-slate-800 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
             <div>
                 <p>© ALL RIGHTS RESERVED - DEVELOPED BY <span class="text-sky-400 font-bold tracking-wider">sulaiman alnasiri</span></p>
                 <p class="text-[10px] text-slate-600 mt-0.5">منصة إدارة الإعلام المدرسي المتكاملة</p>
             </div>
-            <!-- رؤية 2030 -->
             <div class="flex items-center space-x-2 space-x-reverse bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
                 <span class="text-slate-300 font-bold text-xs">رؤية VISION</span>
                 <span class="text-emerald-500 font-black text-sm">2030</span>
@@ -326,6 +395,9 @@
     <!-- App Application Script -->
     <script>
         let currentEmp = null;
+        let tempLoginUser = null;
+
+        // Structure + LocalStorage Fallback Auto-Save
         let siteData = {
             config: { 
                 title: "منصة الإعلام المدرسي", 
@@ -336,22 +408,40 @@
                 bannerImg: ""
             },
             employees: [
-                { id: '1', name: 'سليمان الناصري', username: 'sulaiman', pass: '1234', role: 'قائد الفريق والبرمجة', cardCode: 'SLM-001', photo: '' },
-                { id: '2', name: 'أحمد علي', username: 'ahmed', pass: '1234', role: 'مصور احترافي', cardCode: 'IMG-101', photo: '' }
+                { id: '1', name: 'سليمان الناصري', username: 'sulaiman', pass: '1234', quickPin: '2030', role: 'قائد الفريق والبرمجة', cardCode: 'SLM-001', photo: '' }
+            ],
+            socials: [
+                { id: 's1', name: 'TikTok', url: 'https://tiktok.com' },
+                { id: 's2', name: 'Snapchat', url: 'https://snapchat.com' }
             ],
             tasks: [],
             notes: [],
             attendance: [],
-            messages: []
+            messages: [],
+            publicFeedback: []
         };
 
+        // Load Saved Data from LocalStorage
+        function loadSavedState() {
+            const saved = localStorage.getItem('saloumi_media_platform_data');
+            if(saved) {
+                try { siteData = JSON.parse(saved); } catch(e){}
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('saloumi_media_platform_data', JSON.stringify(siteData));
+        }
+
         window.onload = function() {
+            loadSavedState();
             renderPublicTeam();
+            renderSocialLinks();
             updateSiteHeaderUI();
         };
 
         function switchTab(tabName) {
-            ['home', 'employee', 'admin'].forEach(t => {
+            ['home', 'employee', 'admin', 'feedback'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.remove('text-sky-400');
             });
@@ -360,11 +450,21 @@
         }
 
         function toggleCardSearchModal() {
-            const modal = document.getElementById('cardSearchModal');
-            modal.classList.toggle('hidden');
+            document.getElementById('cardSearchModal').classList.toggle('hidden');
         }
 
-        // عرض الفريق بالأحدث في الرئيسية
+        // Convert File to Base64 (رفع الصور)
+        function readFileAsBase64(fileInput) {
+            return new Promise((resolve) => {
+                const file = fileInput.files[0];
+                if(!file) return resolve(null);
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // عرض الفريق بالصفحة الرئيسية
         function renderPublicTeam() {
             const grid = document.getElementById('publicTeamGrid');
             if(!siteData.employees.length) {
@@ -386,6 +486,16 @@
             `).join('');
         }
 
+        function renderSocialLinks() {
+            const container = document.getElementById('socialLinksContainer');
+            container.innerHTML = siteData.socials.map(s => `
+                <a href="${s.url}" target="_blank" class="bg-slate-900 text-white hover:bg-sky-600 px-4 py-2 rounded-xl transition flex items-center space-x-2 space-x-reverse font-semibold">
+                    <i class="fa-solid fa-link"></i>
+                    <span>${s.name}</span>
+                </a>
+            `).join('');
+        }
+
         function verifyCardCode() {
             const code = document.getElementById('cardCodeInput').value.trim();
             const resDiv = document.getElementById('cardResult');
@@ -401,14 +511,24 @@
             }
         }
 
+        // دخول الموظف بكلمة المرور أو بالرمز السريع الذي عيّنه هو بنفسه
         function loginEmp() {
             const u = document.getElementById('empUsername').value.trim();
             const p = document.getElementById('empPass').value.trim();
-            const emp = siteData.employees.find(e => e.username === u && e.pass === p);
+            const emp = siteData.employees.find(e => e.username === u && (e.pass === p || e.quickPin === p));
 
             if(emp) {
+                // إذا لم يعيّن العضو رمزه السريع بعد
+                if(!emp.quickPin) {
+                    tempLoginUser = emp;
+                    document.getElementById('empLoginForm').classList.add('hidden');
+                    document.getElementById('setQuickPinModal').classList.remove('hidden');
+                    return;
+                }
+
                 currentEmp = emp;
                 document.getElementById('empLoginForm').classList.add('hidden');
+                document.getElementById('setQuickPinModal').classList.add('hidden');
                 document.getElementById('empDashboard').classList.remove('hidden');
                 document.getElementById('empWelcomeName').innerText = emp.name;
                 document.getElementById('empWelcomeRole').innerText = emp.role;
@@ -420,6 +540,31 @@
                 renderEmpData();
             } else {
                 alert('اسم المستخدم أو رمز الدخول غير صحيح');
+            }
+        }
+
+        // العضو يعيّن الرمز السريع بنفسه
+        function saveUserQuickPin() {
+            const pin = document.getElementById('newQuickPinInput').value.trim();
+            if(!pin) return alert('يرجى أدخال رمز الدخول السريع');
+            if(tempLoginUser) {
+                tempLoginUser.quickPin = pin;
+                saveState();
+                alert('تم حفظ رمز الدخول السريع الخاص بك بنجاح!');
+                currentEmp = tempLoginUser;
+                tempLoginUser = null;
+
+                document.getElementById('setQuickPinModal').classList.add('hidden');
+                document.getElementById('empDashboard').classList.remove('hidden');
+                document.getElementById('empWelcomeName').innerText = currentEmp.name;
+                document.getElementById('empWelcomeRole').innerText = currentEmp.role;
+                
+                document.getElementById('currentUserBadge').classList.remove('hidden');
+                document.getElementById('userNameBadge').innerText = currentEmp.name;
+                document.getElementById('userRoleBadge').innerText = currentEmp.role;
+
+                renderEmpData();
+                renderAdminData();
             }
         }
 
@@ -443,6 +588,7 @@
             if(!currentEmp) return;
             const now = new Date().toLocaleString('ar-SA');
             siteData.attendance.push({ name: currentEmp.name, role: currentEmp.role, time: now });
+            saveState();
             document.getElementById('attendStatus').innerText = `تم تسجيل الحضور في: ${now}`;
             renderAdminData();
         }
@@ -451,12 +597,26 @@
             const txt = document.getElementById('msgToAdmin').value.trim();
             if(!txt) return;
             siteData.messages.push({ sender: currentEmp.name, msg: txt, time: new Date().toLocaleTimeString('ar-SA') });
+            saveState();
             document.getElementById('msgToAdmin').value = '';
             alert('تم الإرسال إلى لوحة الإدارة');
             renderAdminData();
         }
 
-        // دخول الأدمن كلمة السر Ss@10203040
+        // إرسال ملاحظات الجمهور العامة
+        function submitPublicFeedback() {
+            const name = document.getElementById('publicFeedbackName').value.trim() || 'زائر';
+            const txt = document.getElementById('publicFeedbackText').value.trim();
+            if(!txt) return alert('فضلاً اكتب الملاحظة قبل الإرسال');
+
+            siteData.publicFeedback.push({ name, msg: txt, time: new Date().toLocaleString('ar-SA') });
+            saveState();
+            document.getElementById('publicFeedbackText').value = '';
+            alert('شكراً لك! تم إرسال ملاحظتك بنجاح للوحة الإدارة.');
+            renderAdminData();
+        }
+
+        // دخول الأدمن Ss@10203040
         function loginAdmin() {
             const p = document.getElementById('adminPassInput').value;
             if(p === 'Ss@10203040') {
@@ -465,10 +625,8 @@
                 
                 document.getElementById('editHeaderTitle').value = siteData.config.title;
                 document.getElementById('editHeaderSub').value = siteData.config.subtitle;
-                document.getElementById('editHeaderLogo').value = siteData.config.logoUrl || '';
                 document.getElementById('enableTopBanner').checked = siteData.config.bannerActive;
                 document.getElementById('bannerText').value = siteData.config.bannerText || '';
-                document.getElementById('bannerImgUrl').value = siteData.config.bannerImg || '';
 
                 renderAdminData();
             } else {
@@ -486,6 +644,7 @@
             document.getElementById('assignTaskEmp').innerHTML = empSelectHTML;
             document.getElementById('assignNoteEmp').innerHTML = empSelectHTML;
 
+            // أرشيف الأعضاء بجميع التفاصيل والرموز التي تعينها بنفسك وبهم
             document.getElementById('employeesTableBody').innerHTML = siteData.employees.map(e => `
                 <tr class="border-b">
                     <td class="p-2 border text-center">
@@ -493,50 +652,90 @@
                     </td>
                     <td class="p-2 border font-bold">${e.name}</td>
                     <td class="p-2 border">${e.username}</td>
+                    <td class="p-2 border font-mono bg-slate-50">${e.pass}</td>
+                    <td class="p-2 border font-mono font-bold text-amber-700 bg-amber-50">${e.quickPin || 'لم يعين بعد'}</td>
                     <td class="p-2 border text-sky-700 font-semibold">${e.role}</td>
                     <td class="p-2 border font-mono">${e.cardCode || '-'}</td>
                     <td class="p-2 border"><button onclick="deleteEmp('${e.id}')" class="text-red-600 hover:underline"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `).join('');
 
+            // قائمة الحسابات الاجتماعية في الأدمن
+            document.getElementById('adminSocialList').innerHTML = siteData.socials.map(s => `
+                <div class="bg-slate-100 border px-3 py-1 rounded flex items-center space-x-2 space-x-reverse">
+                    <span><b>${s.name}:</b> ${s.url}</span>
+                    <button onclick="deleteSocial('${s.id}')" class="text-red-600 font-bold ml-1">×</button>
+                </div>
+            `).join('');
+
             document.getElementById('adminMessagesList').innerHTML = siteData.messages.length ? siteData.messages.map(m => `
                 <div class="p-2 bg-sky-50 border border-sky-200 rounded"><span class="font-bold text-sky-900">${m.sender}:</span> ${m.msg} <span class="text-[10px] text-slate-400 font-mono">(${m.time})</span></div>
             `).join('') : '<p class="text-slate-400">لا توجد رسائل</p>';
 
+            document.getElementById('adminPublicFeedbackList').innerHTML = siteData.publicFeedback.length ? siteData.publicFeedback.map(f => `
+                <div class="p-2 bg-amber-50 border border-amber-200 rounded"><span class="font-bold text-amber-900">${f.name}:</span> ${f.msg} <br><span class="text-[10px] text-slate-400 font-mono">(${f.time})</span></div>
+            `).join('') : '<p class="text-slate-400">لا توجد ملاحظات للجمهور</p>';
+
             document.getElementById('adminAttendanceList').innerHTML = siteData.attendance.length ? siteData.attendance.map(a => `
                 <div class="p-2 bg-emerald-50 border border-emerald-200 rounded"><span class="font-bold">${a.name}</span> (${a.role}) - <span class="text-[10px] text-emerald-700">${a.time}</span></div>
-            `).join('') : '<p class="text-slate-400">لا يوجد تسجيل حضور حتى الآن</p>';
+            `).join('') : '<p class="text-slate-400">لا يوجد حضور مسجل</p>';
         }
 
-        function addEmployee() {
+        // إضافة عضو مع رفع صورة العضو من معرض الجهاز
+        async function addEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
             const username = document.getElementById('newEmpUser').value.trim();
             const pass = document.getElementById('newEmpPass').value.trim();
             const role = document.getElementById('newEmpRole').value.trim();
-            const photo = document.getElementById('newEmpPhoto').value.trim();
             const cardCode = document.getElementById('newEmpCardCode').value.trim();
+            const photoFile = document.getElementById('empPhotoFileInput');
 
-            if(!name || !username || !pass || !role) return alert('الرجاء تعبئة جميع الحقول الأساسية بما فيها التخصص');
+            if(!name || !username || !pass || !role) return alert('الرجاء تعبئة جميع الحقول الأساسية');
+
+            const photoBase64 = await readFileAsBase64(photoFile);
 
             siteData.employees.push({ 
                 id: Date.now().toString(), 
                 name, 
                 username, 
                 pass, 
+                quickPin: '', // يتعين من العضو لاحقاً
                 role, 
-                photo,
+                photo: photoBase64 || '',
                 cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` 
             });
 
+            saveState();
             renderAdminData();
             renderPublicTeam();
-            alert('تم إدراج العضو بنجاح في المنصة!');
+            alert('تم تسجيل العضو جديد بنجاح! سيُطلب منه تعيين رمز الدخول السريع عند أول دخول له.');
         }
 
         function deleteEmp(id) {
             siteData.employees = siteData.employees.filter(e => e.id !== id);
+            saveState();
             renderAdminData();
             renderPublicTeam();
+        }
+
+        function addSocialLink() {
+            const name = document.getElementById('newSocialName').value.trim();
+            const url = document.getElementById('newSocialUrl').value.trim();
+            if(!name || !url) return alert('أدخل الاسم والرابط');
+
+            siteData.socials.push({ id: Date.now().toString(), name, url });
+            document.getElementById('newSocialName').value = '';
+            document.getElementById('newSocialUrl').value = '';
+            saveState();
+            renderSocialLinks();
+            renderAdminData();
+        }
+
+        function deleteSocial(id) {
+            siteData.socials = siteData.socials.filter(s => s.id !== id);
+            saveState();
+            renderSocialLinks();
+            renderAdminData();
         }
 
         function assignTask() {
@@ -545,6 +744,7 @@
             if(!desc) return;
             siteData.tasks.push({ id: Date.now().toString(), empUsername, desc });
             document.getElementById('newTaskDesc').value = '';
+            saveState();
             alert('تم إسناد المهمة');
         }
 
@@ -554,34 +754,40 @@
             if(!desc) return;
             siteData.notes.push({ id: Date.now().toString(), empUsername, desc });
             document.getElementById('newNoteDesc').value = '';
+            saveState();
             alert('تم إرسال الملاحظة');
         }
 
-        // حفظ التغييرات واللوجو والإعلانات
-        function saveSiteConfig() {
+        // حفظ الإعدادات والشعار والإعلان من معارض الصور
+        async function saveSiteConfig() {
             const title = document.getElementById('editHeaderTitle').value.trim();
             const sub = document.getElementById('editHeaderSub').value.trim();
-            const logo = document.getElementById('editHeaderLogo').value.trim();
+            const logoFile = document.getElementById('logoFileInput');
             const bannerActive = document.getElementById('enableTopBanner').checked;
             const bannerText = document.getElementById('bannerText').value.trim();
-            const bannerImg = document.getElementById('bannerImgUrl').value.trim();
+            const bannerFile = document.getElementById('bannerFileInput');
 
             if(title) siteData.config.title = title;
             if(sub) siteData.config.subtitle = sub;
-            siteData.config.logoUrl = logo;
+            
+            const logoBase64 = await readFileAsBase64(logoFile);
+            if(logoBase64) siteData.config.logoUrl = logoBase64;
+
             siteData.config.bannerActive = bannerActive;
             siteData.config.bannerText = bannerText;
-            siteData.config.bannerImg = bannerImg;
 
+            const bannerBase64 = await readFileAsBase64(bannerFile);
+            if(bannerBase64) siteData.config.bannerImg = bannerBase64;
+
+            saveState();
             updateSiteHeaderUI();
-            alert('تم تحديث إعدادات المنصة والإعلانات بنجاح!');
+            alert('تم تحديث الشعار والإعلانات والبيانات بنجاح!');
         }
 
         function updateSiteHeaderUI() {
             document.getElementById('headerTitle').innerText = siteData.config.title;
             document.getElementById('headerSubtitle').innerText = siteData.config.subtitle;
 
-            // Logo
             const customLogo = document.getElementById('headerCustomLogo');
             const defaultIcon = document.getElementById('headerDefaultIcon');
             if(siteData.config.logoUrl) {
@@ -593,7 +799,6 @@
                 defaultIcon.classList.remove('hidden');
             }
 
-            // Top Banner
             const topBanner = document.getElementById('topBanner');
             const topBannerImg = document.getElementById('topBannerImg');
             const topBannerText = document.getElementById('topBannerText');
