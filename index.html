@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">منصة إدارة الإعلام المدرسي | Saloumi Platform</title>
+    <title id="pageTitle">منصة الإعلام المدرسي | sulaiman alnasiri</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -47,23 +47,44 @@
     <header class="glass-header text-white sticky top-0 z-50 border-b border-slate-700">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-sky-600 text-white p-2 rounded-lg font-bold text-xl"><i class="fa-solid fa-camera-retro"></i></div>
+                <div id="headerLogoContainer" class="bg-sky-600 text-white p-2 rounded-lg font-bold text-xl flex items-center justify-center min-w-[40px] h-[40px]">
+                    <i id="headerDefaultIcon" class="fa-solid fa-camera-retro"></i>
+                    <img id="headerCustomLogo" src="" class="hidden w-10 h-10 object-cover rounded-lg" alt="Logo">
+                </div>
                 <div>
                     <h1 id="headerTitle" class="font-bold text-lg leading-tight">منصة الإعلام المدرسي</h1>
                     <p id="headerSubtitle" class="text-xs text-sky-400">البوابة الرسمية لإدارة الأنشطة الإعلامية</p>
                 </div>
             </div>
-            <div id="currentUserBadge" class="hidden text-sm bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-300">
-                <span id="userNameBadge"></span> (<span id="userRoleBadge"></span>)
+
+            <!-- زر البحث العلوي برقم البطاقة + إشارات المستخدم -->
+            <div class="flex items-center space-x-2 space-x-reverse">
+                <button onclick="toggleCardSearchModal()" title="البحث برقم البطاقة" class="bg-slate-800 hover:bg-sky-600 text-white p-2 rounded-full border border-slate-700 text-sm transition">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <div id="currentUserBadge" class="hidden text-sm bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-300">
+                    <span id="userNameBadge"></span> (<span id="userRoleBadge"></span>)
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- شريط إعلان في أعلى الواجهة الرئيسي (يمكن تفعيله وتعديله من الأدمن) -->
+    <div id="topBanner" class="hidden bg-slate-900 border-b border-sky-500/30 text-white py-3 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <img id="topBannerImg" src="" class="hidden w-12 h-12 object-cover rounded-lg border border-sky-400" alt="Banner">
+                <p id="topBannerText" class="text-xs md:text-sm font-semibold"></p>
+            </div>
+            <span class="bg-sky-500 text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full">إعلان مهم</span>
+        </div>
+    </div>
+
     <!-- Main Content Area -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
 
-        <!-- TAB 1: الصفحة الرئيسية (الجمهور / البطاقة) -->
-        <section id="tab-home" class="space-y-6">
+        <!-- TAB 1: الصفحة الرئيسية (عرض الأعضاء + البانر) -->
+        <section id="tab-home" class="space-y-8">
             <div class="bg-gradient-to-r from-slate-900 to-sky-900 text-white rounded-2xl p-8 shadow-xl text-center md:text-right relative overflow-hidden">
                 <div class="max-w-2xl relative z-10 space-y-4">
                     <span class="bg-sky-500/20 text-sky-300 text-xs px-3 py-1 rounded-full border border-sky-400/30">المكتب الإعلامي الموحد</span>
@@ -72,24 +93,20 @@
                 </div>
             </div>
 
-            <!-- التحقق برمز البطاقة -->
-            <div class="gov-card p-6 rounded-xl border border-slate-200 text-center max-w-xl mx-auto space-y-4">
-                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl">
-                    <i class="fa-solid fa-qrcode"></i>
+            <!-- قسم عرض الأعضاء والفريق -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 class="font-bold text-xl text-slate-800"><i class="fa-solid fa-users text-sky-600 ml-2"></i>فريق العمل والإعلام</h3>
+                    <span class="text-xs text-slate-500">نخبة الكوادر الإعلامية</span>
                 </div>
-                <h3 class="font-bold text-lg">التحقق من رمز بطاقة العضو</h3>
-                <p class="text-xs text-slate-500">أدخل الرمز الخاص الموجود على البطاقة التعريفية للتحقق من الصلاحية</p>
-                <div class="flex gap-2">
-                    <input type="text" id="cardCodeInput" placeholder="أدخل رمز البطاقة..." class="flex-1 border rounded-lg px-4 py-2 text-center font-mono focus:ring-2 focus:ring-sky-500 outline-none">
-                    <button onclick="verifyCardCode()" class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700 font-semibold text-sm">تحقق</button>
+                <div id="publicTeamGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- يطبع الأعضاء هنا تلقائياً -->
                 </div>
-                <div id="cardResult" class="hidden p-3 rounded-lg text-sm"></div>
             </div>
         </section>
 
         <!-- TAB 2: بوابة الموظفين -->
         <section id="tab-employee" class="hidden space-y-6">
-            <!-- تسجيل دخول الأعضاء -->
             <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
                 <div>
@@ -103,7 +120,6 @@
                 <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
             </div>
 
-            <!-- لوحة الموظف الشخصية -->
             <div id="empDashboard" class="hidden space-y-6">
                 <div class="bg-white p-6 rounded-xl border border-slate-200 flex justify-between items-center">
                     <div>
@@ -113,7 +129,6 @@
                     <button onclick="empLogout()" class="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200"><i class="fa-solid fa-sign-out-alt ml-1"></i>خروج</button>
                 </div>
 
-                <!-- أقسام الموظف (المهمات - الملاحظات - الحضور - مراسلة) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-list-check ml-2"></i>المهمات والالتزامات</h4>
@@ -126,14 +141,12 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- سجل الحضور -->
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-calendar-check ml-2"></i>تسجيل الحضور اليومي</h4>
                         <button onclick="recordAttendance()" class="w-full bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700 text-sm">تسجيل حضوري الآن</button>
                         <p id="attendStatus" class="text-xs text-center mt-2 text-slate-500"></p>
                     </div>
 
-                    <!-- مراسلة الإدارة -->
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-paper-plane ml-2"></i>مراسلة الإدارة</h4>
                         <textarea id="msgToAdmin" placeholder="اكتب استفسارك أو اقتراحك هنا..." class="w-full border rounded-lg p-2 text-xs h-20 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
@@ -145,7 +158,6 @@
 
         <!-- TAB 3: لوحة تحكم الأدمن -->
         <section id="tab-admin" class="hidden space-y-6">
-            <!-- تسجيل دخول الأدمن -->
             <div id="adminLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-shield-halved text-sky-600 ml-2"></i>لوحة التحكم العليا (Admin)</h3>
                 <div>
@@ -155,61 +167,67 @@
                 <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-2 rounded-lg font-bold hover:bg-black">دخول اللوحة</button>
             </div>
 
-            <!-- لوحة التحكم الكلية -->
             <div id="adminDashboard" class="hidden space-y-6">
-                <!-- شريط الإدارة العلوية -->
                 <div class="bg-slate-900 text-white p-6 rounded-xl flex justify-between items-center">
                     <div>
-                        <h2 class="text-xl font-bold">لوحة الإدارة الكاملة (Saloumi)</h2>
-                        <p class="text-xs text-slate-400">التحكم الشامل بكل أدوات ومحتوى المنصة باسم المطور Saloumi</p>
+                        <h2 class="text-xl font-bold">لوحة الإدارة الكاملة (sulaiman alnasiri)</h2>
+                        <p class="text-xs text-slate-400">التحكم الشامل بجميع أدوات المنصة، الصور، الإعلانات، والأعضاء</p>
                     </div>
                     <button onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg">خروج</button>
                 </div>
 
-                <!-- التحكم بالعناوين واسم المنصة بالكامل -->
+                <!-- التحكم بأسماء وصور الواجهة + الإعلانات العليا -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
-                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-pen-to-square text-sky-600 ml-2"></i>التحكم باسم المنصة والعناوين الرئيسية</h3>
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-sliders text-sky-600 ml-2"></i>التحكم باسم المنصة، الشعار، والإعلانات</h3>
+                    
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                         <div>
-                            <label class="block font-semibold mb-1">اسم المنصة بالكامل (الرئيسي)</label>
-                            <input type="text" id="editHeaderTitle" placeholder="منصة الإعلام المدرسي" class="w-full border rounded p-2">
+                            <label class="block font-semibold mb-1">اسم المنصة بالكامل</label>
+                            <input type="text" id="editHeaderTitle" class="w-full border rounded p-2">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1">العنوان الفرعي (Subtitle)</label>
-                            <input type="text" id="editHeaderSub" placeholder="البوابة الرسمية لإدارة الأنشطة الإعلامية" class="w-full border rounded p-2">
+                            <label class="block font-semibold mb-1">العنوان الفرعي</label>
+                            <input type="text" id="editHeaderSub" class="w-full border rounded p-2">
                         </div>
                         <div>
-                            <label class="block font-semibold mb-1">عنوان البانر الترحيبي</label>
-                            <input type="text" id="editBannerTitle" placeholder="مرحباً بكم في منصة التوثيق والإعلام المدرسي" class="w-full border rounded p-2">
+                            <label class="block font-semibold mb-1">رابط صورة الشعار (Logo URL)</label>
+                            <input type="text" id="editHeaderLogo" placeholder="https://example.com/logo.png" class="w-full border rounded p-2">
                         </div>
                     </div>
-                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ وتحديث اسم المنصة</button>
+
+                    <!-- إعداد الإعلان الأعلى -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
+                        <div class="flex items-center space-x-2 space-x-reverse">
+                            <input type="checkbox" id="enableTopBanner" class="w-4 h-4 text-sky-600 rounded">
+                            <label for="enableTopBanner" class="font-bold text-xs text-slate-800">تفعيل الإعلان العلوي في الواجهة</label>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <input type="text" id="bannerText" placeholder="نص الإعلان..." class="border rounded p-2">
+                            <input type="text" id="bannerImgUrl" placeholder="رابط صورة الإعلان (URL)..." class="border rounded p-2">
+                        </div>
+                    </div>
+
+                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ وإعادة التحديث</button>
                 </div>
 
-                <!-- إدارة الأعضاء والتخصصات -->
+                <!-- إضافة / تعديل الأعضاء وتخصصاتهم حرّاً -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
-                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة / تعديل عضو بالمسؤوليات</h3>
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد (مع كتابة التخصص حرّاً)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                         <input type="text" id="newEmpName" placeholder="الاسم الكامل" class="border rounded p-2">
                         <input type="text" id="newEmpUser" placeholder="اسم المستخدم" class="border rounded p-2">
                         <input type="text" id="newEmpPass" placeholder="رمز الدخول السريع" class="border rounded p-2">
-                        <select id="newEmpRole" class="border rounded p-2">
-                            <option value="برمجة">برمجة</option>
-                            <option value="كاتب محتوى">كاتب محتوى</option>
-                            <option value="مصور">مصور</option>
-                            <option value="مساعد مصور">مساعد مصور</option>
-                            <option value="مونتير">مونتير</option>
-                            <option value="مقدم / إذاعة">مقدم / إذاعة</option>
-                        </select>
-                        <input type="text" id="newEmpCardCode" placeholder="رمز البطاقة الشخصية" class="border rounded p-2">
+                        <input type="text" id="newEmpRole" placeholder="التخصص (مثال: كاتب، مصور، قائد...)" class="border rounded p-2">
+                        <input type="text" id="newEmpPhoto" placeholder="رابط صورة العضو (اختياري URL)" class="border rounded p-2">
+                        <input type="text" id="newEmpCardCode" placeholder="رمز البطاقة (اختياري)" class="border rounded p-2">
                     </div>
                     <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
 
-                    <!-- جدول الأعضاء -->
                     <div class="overflow-x-auto mt-4">
                         <table class="w-full text-xs text-right border-collapse border">
                             <thead>
                                 <tr class="bg-slate-100 border-b">
+                                    <th class="p-2 border">الصورة</th>
                                     <th class="p-2 border">الاسم</th>
                                     <th class="p-2 border">اسم المستخدم</th>
                                     <th class="p-2 border">التخصص</th>
@@ -222,32 +240,31 @@
                     </div>
                 </div>
 
-                <!-- إسناد المهمات والملاحظات -->
+                <!-- المهمات والملاحظات والرسائل -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إضافة مهمة جديدة لعضو</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إضافة مهمة جديدة</h3>
                         <select id="assignTaskEmp" class="w-full border rounded p-2 text-xs"></select>
-                        <textarea id="newTaskDesc" placeholder="تفاصيل المهمة المطلوبة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
+                        <textarea id="newTaskDesc" placeholder="تفاصيل المهمة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
                         <button onclick="assignTask()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إسناد المهمة</button>
                     </div>
 
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية لعضو</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية</h3>
                         <select id="assignNoteEmp" class="w-full border rounded p-2 text-xs"></select>
-                        <textarea id="newNoteDesc" placeholder="اكتب الملاحظة الفنية هنا..." class="w-full border rounded p-2 text-xs h-20"></textarea>
+                        <textarea id="newNoteDesc" placeholder="اكتب الملاحظة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
                         <button onclick="assignNote()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إرسال الملاحظة</button>
                     </div>
                 </div>
 
-                <!-- الرسائل الواردة وسجل الحضور -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-inbox text-sky-600 ml-2"></i>رسائل الأعضاء الواردة</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-inbox text-sky-600 ml-2"></i>رسائل الأعضاء</h3>
                         <div id="adminMessagesList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                     </div>
 
                     <div class="gov-card p-6 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-clipboard-user text-sky-600 ml-2"></i>سجل الحضور والغياب</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-clipboard-user text-sky-600 ml-2"></i>سجل الحضور</h3>
                         <div id="adminAttendanceList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                     </div>
                 </div>
@@ -256,8 +273,25 @@
 
     </main>
 
-    <!-- Bottom Navigation Bar (منصة رسمية) -->
-    <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-50">
+    <!-- Modal البحث برقم البطاقة الشخصية -->
+    <div id="cardSearchModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-filter blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full rounded-2xl p-6 space-y-4 shadow-2xl relative">
+            <button onclick="toggleCardSearchModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            <div class="text-center space-y-2">
+                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-id-card"></i></div>
+                <h3 class="font-bold text-lg">التحقق السريع من رمز البطاقة</h3>
+                <p class="text-xs text-slate-500">أدخل رمز بطاقة العضو لعرض تفاصيله المباشرة</p>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="cardCodeInput" placeholder="رمز البطاقة..." class="flex-1 border rounded-lg px-3 py-2 text-center font-mono outline-none focus:ring-2 focus:ring-sky-500 text-sm">
+                <button onclick="verifyCardCode()" class="bg-sky-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-sky-700">بحث</button>
+            </div>
+            <div id="cardResult" class="hidden p-3 rounded-lg text-sm text-center"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-40">
         <div class="max-w-md mx-auto flex justify-around py-3">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400">
                 <i class="fa-solid fa-house text-lg"></i>
@@ -274,32 +308,48 @@
         </div>
     </nav>
 
-    <!-- Footer (حقوق الطبع والنشر والملكية الكاملة باسم Saloumi) -->
-    <footer class="bg-slate-950 text-slate-500 text-center py-4 text-xs border-t border-slate-800">
-        <p>© ALL RIGHTS RESERVED - DEVELOPED & MANAGED BY <span class="text-sky-400 font-bold tracking-wider">SALOUMI</span> | SCHOOL MEDIA SYSTEM</p>
+    <!-- Footer مع حقوق sulaiman alnasiri وشعار رؤية 2030 -->
+    <footer class="bg-slate-950 text-slate-500 py-6 text-xs border-t border-slate-800 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
+            <div>
+                <p>© ALL RIGHTS RESERVED - DEVELOPED BY <span class="text-sky-400 font-bold tracking-wider">sulaiman alnasiri</span></p>
+                <p class="text-[10px] text-slate-600 mt-0.5">منصة إدارة الإعلام المدرسي المتكاملة</p>
+            </div>
+            <!-- رؤية 2030 -->
+            <div class="flex items-center space-x-2 space-x-reverse bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+                <span class="text-slate-300 font-bold text-xs">رؤية VISION</span>
+                <span class="text-emerald-500 font-black text-sm">2030</span>
+            </div>
+        </div>
     </footer>
 
     <!-- App Application Script -->
     <script>
-        // State
         let currentEmp = null;
         let siteData = {
-            config: { title: "منصة الإعلام المدرسي", subtitle: "البوابة الرسمية لإدارة الأنشطة الإعلامية", bannerTitle: "مرحباً بكم في منصة التوثيق والإعلام المدرسي" },
+            config: { 
+                title: "منصة الإعلام المدرسي", 
+                subtitle: "البوابة الرسمية لإدارة الأنشطة الإعلامية", 
+                logoUrl: "",
+                bannerActive: false,
+                bannerText: "",
+                bannerImg: ""
+            },
             employees: [
-                { id: '1', name: 'أحمد علي', username: 'ahmed', pass: '1234', role: 'مصور', cardCode: 'IMG-101' },
-                { id: '2', name: 'سارة محمد', username: 'sara', pass: '1234', role: 'كاتب محتوى', cardCode: 'WRT-102' }
+                { id: '1', name: 'سليمان الناصري', username: 'sulaiman', pass: '1234', role: 'قائد الفريق والبرمجة', cardCode: 'SLM-001', photo: '' },
+                { id: '2', name: 'أحمد علي', username: 'ahmed', pass: '1234', role: 'مصور احترافي', cardCode: 'IMG-101', photo: '' }
             ],
-            tasks: [
-                { id: 't1', empUsername: 'ahmed', desc: 'تصوير لقطات سينمائية لطابور الصباح اليوم' }
-            ],
-            notes: [
-                { id: 'n1', empUsername: 'ahmed', desc: 'الانتباه لإضاءة الممر الخلفي أثناء التصوير' }
-            ],
+            tasks: [],
+            notes: [],
             attendance: [],
             messages: []
         };
 
-        // Switch Tabs
+        window.onload = function() {
+            renderPublicTeam();
+            updateSiteHeaderUI();
+        };
+
         function switchTab(tabName) {
             ['home', 'employee', 'admin'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -309,7 +359,33 @@
             document.getElementById(`nav-${tabName}`).classList.add('text-sky-400');
         }
 
-        // Verify Card Code
+        function toggleCardSearchModal() {
+            const modal = document.getElementById('cardSearchModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // عرض الفريق بالأحدث في الرئيسية
+        function renderPublicTeam() {
+            const grid = document.getElementById('publicTeamGrid');
+            if(!siteData.employees.length) {
+                grid.innerHTML = '<p class="text-slate-400 text-xs">لا يوجد أعضاء حالياً</p>';
+                return;
+            }
+
+            grid.innerHTML = siteData.employees.map(emp => `
+                <div class="gov-card p-5 rounded-2xl text-center space-y-3 transition transform hover:-translate-y-1 hover:shadow-lg">
+                    ${emp.photo ? 
+                        `<img src="${emp.photo}" class="w-20 h-20 object-cover rounded-full mx-auto border-2 border-sky-500 shadow-md" alt="${emp.name}">` : 
+                        `<div class="w-20 h-20 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold border-2 border-slate-200">${emp.name.charAt(0)}</div>`
+                    }
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-md">${emp.name}</h4>
+                        <span class="inline-block bg-sky-50 text-sky-700 text-xs px-2.5 py-1 rounded-full border border-sky-200 mt-1 font-semibold">${emp.role}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function verifyCardCode() {
             const code = document.getElementById('cardCodeInput').value.trim();
             const resDiv = document.getElementById('cardResult');
@@ -318,14 +394,13 @@
             const emp = siteData.employees.find(e => e.cardCode === code);
             if(emp) {
                 resDiv.className = "p-3 rounded-lg text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
-                resDiv.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> البطاقة معتمدة: <b>${emp.name}</b> (${emp.role})`;
+                resDiv.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> العضو: <b>${emp.name}</b> (${emp.role})`;
             } else {
                 resDiv.className = "p-3 rounded-lg text-sm bg-red-100 text-red-800 border border-red-300";
-                resDiv.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> رمز البطاقة غير مسجل لدينا!`;
+                resDiv.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> رمز البطاقة غير مسجل!`;
             }
         }
 
-        // Login Member
         function loginEmp() {
             const u = document.getElementById('empUsername').value.trim();
             const p = document.getElementById('empPass').value.trim();
@@ -357,20 +432,18 @@
 
         function renderEmpData() {
             if(!currentEmp) return;
-            const tasksList = document.getElementById('empTasksList');
             const empTasks = siteData.tasks.filter(t => t.empUsername === currentEmp.username);
-            tasksList.innerHTML = empTasks.length ? empTasks.map(t => `<div class="p-2 bg-slate-50 border rounded-lg text-slate-700"><i class="fa-regular fa-square-check text-sky-600 ml-1"></i> ${t.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد مهمات حالية</p>';
+            document.getElementById('empTasksList').innerHTML = empTasks.length ? empTasks.map(t => `<div class="p-2 bg-slate-50 border rounded-lg text-slate-700"><i class="fa-regular fa-square-check text-sky-600 ml-1"></i> ${t.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد مهمات حالية</p>';
 
-            const notesList = document.getElementById('empNotesList');
             const empNotes = siteData.notes.filter(n => n.empUsername === currentEmp.username);
-            notesList.innerHTML = empNotes.length ? empNotes.map(n => `<div class="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-900"><i class="fa-solid fa-triangle-exclamation text-amber-600 ml-1"></i> ${n.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد ملاحظات جديدة</p>';
+            document.getElementById('empNotesList').innerHTML = empNotes.length ? empNotes.map(n => `<div class="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-900"><i class="fa-solid fa-triangle-exclamation text-amber-600 ml-1"></i> ${n.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد ملاحظات جديدة</p>';
         }
 
         function recordAttendance() {
             if(!currentEmp) return;
             const now = new Date().toLocaleString('ar-SA');
             siteData.attendance.push({ name: currentEmp.name, role: currentEmp.role, time: now });
-            document.getElementById('attendStatus').innerText = `تم تسجيل الحضور بنجاح في: ${now}`;
+            document.getElementById('attendStatus').innerText = `تم تسجيل الحضور في: ${now}`;
             renderAdminData();
         }
 
@@ -379,25 +452,27 @@
             if(!txt) return;
             siteData.messages.push({ sender: currentEmp.name, msg: txt, time: new Date().toLocaleTimeString('ar-SA') });
             document.getElementById('msgToAdmin').value = '';
-            alert('تم إرسال رسالتك إلى لوحة الإدارة');
+            alert('تم الإرسال إلى لوحة الإدارة');
             renderAdminData();
         }
 
-        // Admin Login (Pass: Ss@10203040)
+        // دخول الأدمن كلمة السر Ss@10203040
         function loginAdmin() {
             const p = document.getElementById('adminPassInput').value;
             if(p === 'Ss@10203040') {
                 document.getElementById('adminLoginForm').classList.add('hidden');
                 document.getElementById('adminDashboard').classList.remove('hidden');
                 
-                // Set current values in inputs
                 document.getElementById('editHeaderTitle').value = siteData.config.title;
                 document.getElementById('editHeaderSub').value = siteData.config.subtitle;
-                document.getElementById('editBannerTitle').value = siteData.config.bannerTitle || '';
+                document.getElementById('editHeaderLogo').value = siteData.config.logoUrl || '';
+                document.getElementById('enableTopBanner').checked = siteData.config.bannerActive;
+                document.getElementById('bannerText').value = siteData.config.bannerText || '';
+                document.getElementById('bannerImgUrl').value = siteData.config.bannerImg || '';
 
                 renderAdminData();
             } else {
-                alert('كلمة مرور الإدارة غير صحيحة!');
+                alert('كلمة المرور غير صحيحة!');
             }
         }
 
@@ -413,10 +488,13 @@
 
             document.getElementById('employeesTableBody').innerHTML = siteData.employees.map(e => `
                 <tr class="border-b">
+                    <td class="p-2 border text-center">
+                        ${e.photo ? `<img src="${e.photo}" class="w-8 h-8 rounded-full object-cover mx-auto">` : `<span class="text-slate-400">-</span>`}
+                    </td>
                     <td class="p-2 border font-bold">${e.name}</td>
                     <td class="p-2 border">${e.username}</td>
-                    <td class="p-2 border text-sky-700">${e.role}</td>
-                    <td class="p-2 border font-mono">${e.cardCode}</td>
+                    <td class="p-2 border text-sky-700 font-semibold">${e.role}</td>
+                    <td class="p-2 border font-mono">${e.cardCode || '-'}</td>
                     <td class="p-2 border"><button onclick="deleteEmp('${e.id}')" class="text-red-600 hover:underline"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
             `).join('');
@@ -434,19 +512,31 @@
             const name = document.getElementById('newEmpName').value.trim();
             const username = document.getElementById('newEmpUser').value.trim();
             const pass = document.getElementById('newEmpPass').value.trim();
-            const role = document.getElementById('newEmpRole').value;
+            const role = document.getElementById('newEmpRole').value.trim();
+            const photo = document.getElementById('newEmpPhoto').value.trim();
             const cardCode = document.getElementById('newEmpCardCode').value.trim();
 
-            if(!name || !username || !pass) return alert('الرجاء تعبئة الحقول الأساسية');
+            if(!name || !username || !pass || !role) return alert('الرجاء تعبئة جميع الحقول الأساسية بما فيها التخصص');
 
-            siteData.employees.push({ id: Date.now().toString(), name, username, pass, role, cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` });
+            siteData.employees.push({ 
+                id: Date.now().toString(), 
+                name, 
+                username, 
+                pass, 
+                role, 
+                photo,
+                cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` 
+            });
+
             renderAdminData();
-            alert('تمت إضافة العضو بنجاح');
+            renderPublicTeam();
+            alert('تم إدراج العضو بنجاح في المنصة!');
         }
 
         function deleteEmp(id) {
             siteData.employees = siteData.employees.filter(e => e.id !== id);
             renderAdminData();
+            renderPublicTeam();
         }
 
         function assignTask() {
@@ -464,30 +554,62 @@
             if(!desc) return;
             siteData.notes.push({ id: Date.now().toString(), empUsername, desc });
             document.getElementById('newNoteDesc').value = '';
-            alert('تم إرسال الملاحظة الفنية');
+            alert('تم إرسال الملاحظة');
         }
 
-        // حفظ وتحديث اسم المنصة بالكامل
+        // حفظ التغييرات واللوجو والإعلانات
         function saveSiteConfig() {
             const title = document.getElementById('editHeaderTitle').value.trim();
             const sub = document.getElementById('editHeaderSub').value.trim();
-            const banner = document.getElementById('editBannerTitle').value.trim();
+            const logo = document.getElementById('editHeaderLogo').value.trim();
+            const bannerActive = document.getElementById('enableTopBanner').checked;
+            const bannerText = document.getElementById('bannerText').value.trim();
+            const bannerImg = document.getElementById('bannerImgUrl').value.trim();
 
-            if(title) {
-                siteData.config.title = title;
-                document.getElementById('headerTitle').innerText = title;
-                document.getElementById('pageTitle').innerText = title + " | Saloumi Platform";
-            }
-            if(sub) {
-                siteData.config.subtitle = sub;
-                document.getElementById('headerSubtitle').innerText = sub;
-            }
-            if(banner) {
-                siteData.config.bannerTitle = banner;
-                document.getElementById('mainBannerTitle').innerText = banner;
+            if(title) siteData.config.title = title;
+            if(sub) siteData.config.subtitle = sub;
+            siteData.config.logoUrl = logo;
+            siteData.config.bannerActive = bannerActive;
+            siteData.config.bannerText = bannerText;
+            siteData.config.bannerImg = bannerImg;
+
+            updateSiteHeaderUI();
+            alert('تم تحديث إعدادات المنصة والإعلانات بنجاح!');
+        }
+
+        function updateSiteHeaderUI() {
+            document.getElementById('headerTitle').innerText = siteData.config.title;
+            document.getElementById('headerSubtitle').innerText = siteData.config.subtitle;
+
+            // Logo
+            const customLogo = document.getElementById('headerCustomLogo');
+            const defaultIcon = document.getElementById('headerDefaultIcon');
+            if(siteData.config.logoUrl) {
+                customLogo.src = siteData.config.logoUrl;
+                customLogo.classList.remove('hidden');
+                defaultIcon.classList.add('hidden');
+            } else {
+                customLogo.classList.add('hidden');
+                defaultIcon.classList.remove('hidden');
             }
 
-            alert('تم تحديث اسم المنصة والعناوين بنجاح!');
+            // Top Banner
+            const topBanner = document.getElementById('topBanner');
+            const topBannerImg = document.getElementById('topBannerImg');
+            const topBannerText = document.getElementById('topBannerText');
+
+            if(siteData.config.bannerActive) {
+                topBanner.classList.remove('hidden');
+                topBannerText.innerText = siteData.config.bannerText || 'إعلان مهم من إدارة الإعلام المدرسي';
+                if(siteData.config.bannerImg) {
+                    topBannerImg.src = siteData.config.bannerImg;
+                    topBannerImg.classList.remove('hidden');
+                } else {
+                    topBannerImg.classList.add('hidden');
+                }
+            } else {
+                topBanner.classList.add('hidden');
+            }
         }
     </script>
 </body>
