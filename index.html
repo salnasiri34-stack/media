@@ -19,6 +19,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
             authDomain: "media-e9cab.firebaseapp.com",
+            databaseURL: "https://media-e9cab-default-rtdb.firebaseio.com",
             projectId: "media-e9cab",
             storageBucket: "media-e9cab.firebasestorage.app",
             messagingSenderId: "1011555810702",
@@ -32,6 +33,7 @@
         window.dbRef = ref;
         window.dbSet = set;
 
+        // مزامنة فورية بين الجوال والكمبيوتر
         onValue(ref(db, 'siteData'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
