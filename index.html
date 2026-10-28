@@ -110,16 +110,17 @@
 
         <!-- TAB 2: بوابة الأعضاء -->
         <section id="tab-employee" class="hidden space-y-6">
-            <!-- تسجيل الدخول -->
+            <!-- تسجيل الدخول (يدعم الدخول بالرمز السريع المباشر أو اسم المستخدم لأول مرة) -->
             <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
                 <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
+                <p class="text-xs text-slate-500 text-center">أدخل اسم المستخدم (لأول مرة) أو رمز الدخول السريع مباشرة</p>
                 <div>
-                    <label class="block text-xs font-semibold mb-1">اسم المستخدم</label>
-                    <input type="text" id="empUsername" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                    <label class="block text-xs font-semibold mb-1">اسم المستخدم (اختياري لاحقاً)</label>
+                    <input type="text" id="empUsername" placeholder="اتركه فارغاً إذا كنت تستخدم الرمز السريع..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold mb-1">كلمة المرور / الرمز السريع</label>
-                    <input type="password" id="empPass" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                    <label class="block text-xs font-semibold mb-1">كلمة المرور أو رمز الدخول السريع</label>
+                    <input type="password" id="empPass" placeholder="أدخل رمزك السريع..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
                 <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
             </div>
@@ -129,7 +130,7 @@
                 <div class="text-center space-y-2">
                     <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-key"></i></div>
                     <h3 class="font-bold text-lg">تعيين رمز الدخول السريع الخاص بك</h3>
-                    <p class="text-xs text-slate-500">فضلاً أنشئ رمز دخول سريع خاص بك لتسجيل الدخول به في المرات القادمة</p>
+                    <p class="text-xs text-slate-500">من الآن فصاعداً، ستستطيع الدخول عبر هذا الرمز السريع فقط دون الحاجة لاسم المستخدم!</p>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold mb-1">اختر رمز الدخول السريع</label>
@@ -213,7 +214,6 @@
                         </div>
                     </div>
 
-                    <!-- إعداد الإعلان الأعلى مع اختيار صورة من المعرض -->
                     <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-3">
                         <div class="flex items-center space-x-2 space-x-reverse">
                             <input type="checkbox" id="enableTopBanner" class="w-4 h-4 text-sky-600 rounded">
@@ -233,7 +233,7 @@
 
                 <!-- إضافة / تعديل الأعضاء مع إمكانية رفع الصورة من المعرض -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
-                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد (مع رفع الصورة مباشرة من المعرض)</h3>
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة عضو جديد</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                         <input type="text" id="newEmpName" placeholder="الاسم الكامل" class="border rounded p-2">
                         <input type="text" id="newEmpUser" placeholder="اسم المستخدم" class="border rounded p-2">
@@ -248,7 +248,7 @@
                     <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
                 </div>
 
-                <!-- لوحة سجل الأعضاء المسجلين بجميع البيانات والشفرات (الأرشيف الكامل) -->
+                <!-- لوحة سجل الأعضاء المسجلين الشامل -->
                 <div class="gov-card p-6 rounded-xl border space-y-4">
                     <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-database text-sky-600 ml-2"></i>سجل الأعضاء المسجلين الشامل (الأرشيف الكامل)</h3>
                     <div class="overflow-x-auto">
@@ -259,7 +259,7 @@
                                     <th class="p-2 border">الاسم</th>
                                     <th class="p-2 border">اسم المستخدم</th>
                                     <th class="p-2 border">كلمة المرور</th>
-                                    <th class="p-2 border text-amber-700">الرمز السريع (تعيين العضو)</th>
+                                    <th class="p-2 border text-amber-700">الرمز السريع</th>
                                     <th class="p-2 border">التخصص</th>
                                     <th class="p-2 border">رمز البطاقة</th>
                                     <th class="p-2 border">حذف</th>
@@ -305,7 +305,7 @@
                     </div>
 
                     <div class="gov-card p-5 rounded-xl border space-y-3">
-                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comments text-amber-600 ml-2"></i>ملاحظات الزوار والجمهور (القسم الرابع)</h3>
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comments text-amber-600 ml-2"></i>ملاحظات الزوار والجمهور</h3>
                         <div id="adminPublicFeedbackList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
                     </div>
 
@@ -356,7 +356,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar (4 أقسام) -->
+    <!-- Bottom Navigation Bar -->
     <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-40">
         <div class="max-w-lg mx-auto flex justify-around py-3">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400">
@@ -378,7 +378,7 @@
         </div>
     </nav>
 
-    <!-- Footer مع حقوق sulaiman alnasiri ورؤية 2030 -->
+    <!-- Footer -->
     <footer class="bg-slate-950 text-slate-500 py-6 text-xs border-t border-slate-800 px-4">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-right">
             <div>
@@ -397,7 +397,6 @@
         let currentEmp = null;
         let tempLoginUser = null;
 
-        // Structure + LocalStorage Fallback Auto-Save
         let siteData = {
             config: { 
                 title: "منصة الإعلام المدرسي", 
@@ -421,16 +420,15 @@
             publicFeedback: []
         };
 
-        // Load Saved Data from LocalStorage
         function loadSavedState() {
-            const saved = localStorage.getItem('saloumi_media_platform_data');
+            const saved = localStorage.getItem('sulaiman_media_platform_data');
             if(saved) {
                 try { siteData = JSON.parse(saved); } catch(e){}
             }
         }
 
         function saveState() {
-            localStorage.setItem('saloumi_media_platform_data', JSON.stringify(siteData));
+            localStorage.setItem('sulaiman_media_platform_data', JSON.stringify(siteData));
         }
 
         window.onload = function() {
@@ -453,7 +451,6 @@
             document.getElementById('cardSearchModal').classList.toggle('hidden');
         }
 
-        // Convert File to Base64 (رفع الصور)
         function readFileAsBase64(fileInput) {
             return new Promise((resolve) => {
                 const file = fileInput.files[0];
@@ -464,7 +461,6 @@
             });
         }
 
-        // عرض الفريق بالصفحة الرئيسية
         function renderPublicTeam() {
             const grid = document.getElementById('publicTeamGrid');
             if(!siteData.employees.length) {
@@ -511,14 +507,21 @@
             }
         }
 
-        // دخول الموظف بكلمة المرور أو بالرمز السريع الذي عيّنه هو بنفسه
+        // تسجيل الدخول (يدعم الدخول بالرمز السريع فقط مباشرة بعد أول تسجيل، أو باسم المستخدم لأول مرة)
         function loginEmp() {
             const u = document.getElementById('empUsername').value.trim();
             const p = document.getElementById('empPass').value.trim();
-            const emp = siteData.employees.find(e => e.username === u && (e.pass === p || e.quickPin === p));
+            
+            let emp = null;
+            if(u !== "") {
+                // إذا كتب اسم المستخدم (أو في المرة الأولى)
+                emp = siteData.employees.find(e => e.username === u && (e.pass === p || e.quickPin === p));
+            } else {
+                // إذا ترك اسم المستخدم فارغاً ودخل مباشرة عبر "رمز الدخول السريع"
+                emp = siteData.employees.find(e => e.quickPin === p);
+            }
 
             if(emp) {
-                // إذا لم يعيّن العضو رمزه السريع بعد
                 if(!emp.quickPin) {
                     tempLoginUser = emp;
                     document.getElementById('empLoginForm').classList.add('hidden');
@@ -539,18 +542,17 @@
 
                 renderEmpData();
             } else {
-                alert('اسم المستخدم أو رمز الدخول غير صحيح');
+                alert('رمز الدخول السريع أو بيانات الدخول غير صحيحة');
             }
         }
 
-        // العضو يعيّن الرمز السريع بنفسه
         function saveUserQuickPin() {
             const pin = document.getElementById('newQuickPinInput').value.trim();
-            if(!pin) return alert('يرجى أدخال رمز الدخول السريع');
+            if(!pin) return alert('يرجى إدخال رمز الدخول السريع');
             if(tempLoginUser) {
                 tempLoginUser.quickPin = pin;
                 saveState();
-                alert('تم حفظ رمز الدخول السريع الخاص بك بنجاح!');
+                alert('تم حفظ رمز الدخول السريع بنجاح! من الآن فصاعداً يمكنك الدخول به مباشرة دون اسم المستخدم.');
                 currentEmp = tempLoginUser;
                 tempLoginUser = null;
 
@@ -570,6 +572,8 @@
 
         function empLogout() {
             currentEmp = null;
+            document.getElementById('empUsername').value = '';
+            document.getElementById('empPass').value = '';
             document.getElementById('empLoginForm').classList.remove('hidden');
             document.getElementById('empDashboard').classList.add('hidden');
             document.getElementById('currentUserBadge').classList.add('hidden');
@@ -603,7 +607,6 @@
             renderAdminData();
         }
 
-        // إرسال ملاحظات الجمهور العامة
         function submitPublicFeedback() {
             const name = document.getElementById('publicFeedbackName').value.trim() || 'زائر';
             const txt = document.getElementById('publicFeedbackText').value.trim();
@@ -612,11 +615,10 @@
             siteData.publicFeedback.push({ name, msg: txt, time: new Date().toLocaleString('ar-SA') });
             saveState();
             document.getElementById('publicFeedbackText').value = '';
-            alert('شكراً لك! تم إرسال ملاحظتك بنجاح للوحة الإدارة.');
+            alert('شكراً لك! تم إرسال ملاحظتك بنجاح.');
             renderAdminData();
         }
 
-        // دخول الأدمن Ss@10203040
         function loginAdmin() {
             const p = document.getElementById('adminPassInput').value;
             if(p === 'Ss@10203040') {
@@ -644,7 +646,6 @@
             document.getElementById('assignTaskEmp').innerHTML = empSelectHTML;
             document.getElementById('assignNoteEmp').innerHTML = empSelectHTML;
 
-            // أرشيف الأعضاء بجميع التفاصيل والرموز التي تعينها بنفسك وبهم
             document.getElementById('employeesTableBody').innerHTML = siteData.employees.map(e => `
                 <tr class="border-b">
                     <td class="p-2 border text-center">
@@ -660,7 +661,6 @@
                 </tr>
             `).join('');
 
-            // قائمة الحسابات الاجتماعية في الأدمن
             document.getElementById('adminSocialList').innerHTML = siteData.socials.map(s => `
                 <div class="bg-slate-100 border px-3 py-1 rounded flex items-center space-x-2 space-x-reverse">
                     <span><b>${s.name}:</b> ${s.url}</span>
@@ -674,14 +674,13 @@
 
             document.getElementById('adminPublicFeedbackList').innerHTML = siteData.publicFeedback.length ? siteData.publicFeedback.map(f => `
                 <div class="p-2 bg-amber-50 border border-amber-200 rounded"><span class="font-bold text-amber-900">${f.name}:</span> ${f.msg} <br><span class="text-[10px] text-slate-400 font-mono">(${f.time})</span></div>
-            `).join('') : '<p class="text-slate-400">لا توجد ملاحظات للجمهور</p>';
+            `).join('') : '<p class="text-slate-400">لا توجد ملاحظات</p>';
 
             document.getElementById('adminAttendanceList').innerHTML = siteData.attendance.length ? siteData.attendance.map(a => `
                 <div class="p-2 bg-emerald-50 border border-emerald-200 rounded"><span class="font-bold">${a.name}</span> (${a.role}) - <span class="text-[10px] text-emerald-700">${a.time}</span></div>
             `).join('') : '<p class="text-slate-400">لا يوجد حضور مسجل</p>';
         }
 
-        // إضافة عضو مع رفع صورة العضو من معرض الجهاز
         async function addEmployee() {
             const name = document.getElementById('newEmpName').value.trim();
             const username = document.getElementById('newEmpUser').value.trim();
@@ -699,7 +698,7 @@
                 name, 
                 username, 
                 pass, 
-                quickPin: '', // يتعين من العضو لاحقاً
+                quickPin: '', 
                 role, 
                 photo: photoBase64 || '',
                 cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` 
@@ -708,7 +707,7 @@
             saveState();
             renderAdminData();
             renderPublicTeam();
-            alert('تم تسجيل العضو جديد بنجاح! سيُطلب منه تعيين رمز الدخول السريع عند أول دخول له.');
+            alert('تمت إضافة العضو بنجاح!');
         }
 
         function deleteEmp(id) {
@@ -758,7 +757,6 @@
             alert('تم إرسال الملاحظة');
         }
 
-        // حفظ الإعدادات والشعار والإعلان من معارض الصور
         async function saveSiteConfig() {
             const title = document.getElementById('editHeaderTitle').value.trim();
             const sub = document.getElementById('editHeaderSub').value.trim();
@@ -781,7 +779,7 @@
 
             saveState();
             updateSiteHeaderUI();
-            alert('تم تحديث الشعار والإعلانات والبيانات بنجاح!');
+            alert('تم تحديث إعدادات المنصة بنجاح!');
         }
 
         function updateSiteHeaderUI() {
