@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">منصة إدارة الإعلام المدرسي | Saloumi Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCa88bpcCLH72eClDr9MynUS0I3lXuKzdI",
+            authDomain: "media-e9cab.firebaseapp.com",
+            projectId: "media-e9cab",
+            storageBucket: "media-e9cab.firebasestorage.app",
+            messagingSenderId: "1011555810702",
+            appId: "1:1011555810702:web:0c3dcd3816cecd8ccaf8df",
+            measurementId: "G-RFPQWN51Z5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        window.db = db;
+        window.dbRef = ref;
+        window.dbSet = set;
+        window.dbOnValue = onValue;
+        window.dbPush = push;
+    </script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .glass-header { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); }
+        .gov-card { background: #ffffff; border-top: 4px solid #0284c7; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Nav -->
+    <header class="glass-header text-white sticky top-0 z-50 border-b border-slate-700">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-sky-600 text-white p-2 rounded-lg font-bold text-xl"><i class="fa-solid fa-camera-retro"></i></div>
+                <div>
+                    <h1 id="headerTitle" class="font-bold text-lg leading-tight">منصة الإعلام المدرسي</h1>
+                    <p id="headerSubtitle" class="text-xs text-sky-400">البوابة الرسمية لإدارة الأنشطة الإعلامية</p>
+                </div>
+            </div>
+            <div id="currentUserBadge" class="hidden text-sm bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-300">
+                <span id="userNameBadge"></span> (<span id="userRoleBadge"></span>)
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- TAB 1: الصفحة الرئيسية (الجمهور / البطاقة) -->
+        <section id="tab-home" class="space-y-6">
+            <div class="bg-gradient-to-r from-slate-900 to-sky-900 text-white rounded-2xl p-8 shadow-xl text-center md:text-right relative overflow-hidden">
+                <div class="max-w-2xl relative z-10 space-y-4">
+                    <span class="bg-sky-500/20 text-sky-300 text-xs px-3 py-1 rounded-full border border-sky-400/30">المكتب الإعلامي الموحد</span>
+                    <h2 id="mainBannerTitle" class="text-3xl font-extrabold">مرحباً بكم في منصة التوثيق والإعلام المدرسي</h2>
+                    <p id="mainBannerDesc" class="text-slate-300 text-sm leading-relaxed">المنصة الذكية المخصصة لإدارة العمليات الإعلامية، وتكليف المهمات الميدانية، وتوثيق المبادرات المدرسية بكل احترافية.</p>
+                </div>
+            </div>
+
+            <!-- التحقق برمز البطاقة -->
+            <div class="gov-card p-6 rounded-xl border border-slate-200 text-center max-w-xl mx-auto space-y-4">
+                <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <h3 class="font-bold text-lg">التحقق من رمز بطاقة العضو</h3>
+                <p class="text-xs text-slate-500">أدخل الرمز الخاص الموجود على البطاقة التعريفية للتحقق من الصلاحية</p>
+                <div class="flex gap-2">
+                    <input type="text" id="cardCodeInput" placeholder="أدخل رمز البطاقة..." class="flex-1 border rounded-lg px-4 py-2 text-center font-mono focus:ring-2 focus:ring-sky-500 outline-none">
+                    <button onclick="verifyCardCode()" class="bg-sky-600 text-white px-6 py-2 rounded-lg hover:bg-sky-700 font-semibold text-sm">تحقق</button>
+                </div>
+                <div id="cardResult" class="hidden p-3 rounded-lg text-sm"></div>
+            </div>
+        </section>
+
+        <!-- TAB 2: بوابة الموظفين -->
+        <section id="tab-employee" class="hidden space-y-6">
+            <!-- تسجيل دخول الأعضاء -->
+            <div id="empLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
+                <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-user-lock text-sky-600 ml-2"></i>دخول أعضاء الفريق</h3>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">اسم المستخدم</label>
+                    <input type="text" id="empUsername" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">رمز الدخول السريع</label>
+                    <input type="password" id="empPass" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2 rounded-lg font-bold hover:bg-sky-700">تسجيل الدخول</button>
+            </div>
+
+            <!-- لوحة الموظف الشخصية -->
+            <div id="empDashboard" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold" id="empWelcomeName">أهلاً بك</h2>
+                        <p class="text-xs text-slate-500">التخصص: <span id="empWelcomeRole" class="font-semibold text-sky-600"></span></p>
+                    </div>
+                    <button onclick="empLogout()" class="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200"><i class="fa-solid fa-sign-out-alt ml-1"></i>خروج</button>
+                </div>
+
+                <!-- أقسام الموظف (المهمات - الملاحظات - الحضور - مراسلة) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="gov-card p-5 rounded-xl border">
+                        <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-list-check ml-2"></i>المهمات والالتزامات</h4>
+                        <div id="empTasksList" class="space-y-2 text-sm"></div>
+                    </div>
+                    <div class="gov-card p-5 rounded-xl border">
+                        <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-comment-dots ml-2"></i>الملاحظات الفنية</h4>
+                        <div id="empNotesList" class="space-y-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- سجل الحضور -->
+                    <div class="gov-card p-5 rounded-xl border">
+                        <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-calendar-check ml-2"></i>تسجيل الحضور اليومي</h4>
+                        <button onclick="recordAttendance()" class="w-full bg-emerald-600 text-white py-2 rounded-lg font-bold hover:bg-emerald-700 text-sm">تسجيل حضوري الآن</button>
+                        <p id="attendStatus" class="text-xs text-center mt-2 text-slate-500"></p>
+                    </div>
+
+                    <!-- مراسلة الإدارة -->
+                    <div class="gov-card p-5 rounded-xl border">
+                        <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-paper-plane ml-2"></i>مراسلة الإدارة</h4>
+                        <textarea id="msgToAdmin" placeholder="اكتب استفسارك أو اقتراحك هنا..." class="w-full border rounded-lg p-2 text-xs h-20 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                        <button onclick="sendMessageToAdmin()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold text-xs hover:bg-slate-900 mt-2">إرسال للمسؤول</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: لوحة تحكم الأدمن -->
+        <section id="tab-admin" class="hidden space-y-6">
+            <!-- تسجيل دخول الأدمن -->
+            <div id="adminLoginForm" class="max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
+                <h3 class="text-xl font-bold text-slate-800 text-center"><i class="fa-solid fa-shield-halved text-sky-600 ml-2"></i>لوحة التحكم العليا (Admin)</h3>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">كلمة المرور الخاصة</label>
+                    <input type="password" id="adminPassInput" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
+                </div>
+                <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-2 rounded-lg font-bold hover:bg-black">دخول اللوحة</button>
+            </div>
+
+            <!-- لوحة التحكم الكلية -->
+            <div id="adminDashboard" class="hidden space-y-6">
+                <!-- شريط الإدارة العلوية -->
+                <div class="bg-slate-900 text-white p-6 rounded-xl flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold">لوحة الإدارة الكاملة (Saloumi)</h2>
+                        <p class="text-xs text-slate-400">التحكم الشامل بكل أدوات ومحتوى المنصة باسم المطور Saloumi</p>
+                    </div>
+                    <button onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg">خروج</button>
+                </div>
+
+                <!-- التحكم بالعناوين واسم المنصة بالكامل -->
+                <div class="gov-card p-6 rounded-xl border space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-pen-to-square text-sky-600 ml-2"></i>التحكم باسم المنصة والعناوين الرئيسية</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div>
+                            <label class="block font-semibold mb-1">اسم المنصة بالكامل (الرئيسي)</label>
+                            <input type="text" id="editHeaderTitle" placeholder="منصة الإعلام المدرسي" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">العنوان الفرعي (Subtitle)</label>
+                            <input type="text" id="editHeaderSub" placeholder="البوابة الرسمية لإدارة الأنشطة الإعلامية" class="w-full border rounded p-2">
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">عنوان البانر الترحيبي</label>
+                            <input type="text" id="editBannerTitle" placeholder="مرحباً بكم في منصة التوثيق والإعلام المدرسي" class="w-full border rounded p-2">
+                        </div>
+                    </div>
+                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">حفظ وتحديث اسم المنصة</button>
+                </div>
+
+                <!-- إدارة الأعضاء والتخصصات -->
+                <div class="gov-card p-6 rounded-xl border space-y-4">
+                    <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-user-plus text-sky-600 ml-2"></i>إضافة / تعديل عضو بالمسؤوليات</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <input type="text" id="newEmpName" placeholder="الاسم الكامل" class="border rounded p-2">
+                        <input type="text" id="newEmpUser" placeholder="اسم المستخدم" class="border rounded p-2">
+                        <input type="text" id="newEmpPass" placeholder="رمز الدخول السريع" class="border rounded p-2">
+                        <select id="newEmpRole" class="border rounded p-2">
+                            <option value="برمجة">برمجة</option>
+                            <option value="كاتب محتوى">كاتب محتوى</option>
+                            <option value="مصور">مصور</option>
+                            <option value="مساعد مصور">مساعد مصور</option>
+                            <option value="مونتير">مونتير</option>
+                            <option value="مقدم / إذاعة">مقدم / إذاعة</option>
+                        </select>
+                        <input type="text" id="newEmpCardCode" placeholder="رمز البطاقة الشخصية" class="border rounded p-2">
+                    </div>
+                    <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold">+ إضافة العضو</button>
+
+                    <!-- جدول الأعضاء -->
+                    <div class="overflow-x-auto mt-4">
+                        <table class="w-full text-xs text-right border-collapse border">
+                            <thead>
+                                <tr class="bg-slate-100 border-b">
+                                    <th class="p-2 border">الاسم</th>
+                                    <th class="p-2 border">اسم المستخدم</th>
+                                    <th class="p-2 border">التخصص</th>
+                                    <th class="p-2 border">رمز البطاقة</th>
+                                    <th class="p-2 border">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="employeesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- إسناد المهمات والملاحظات -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="gov-card p-6 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إضافة مهمة جديدة لعضو</h3>
+                        <select id="assignTaskEmp" class="w-full border rounded p-2 text-xs"></select>
+                        <textarea id="newTaskDesc" placeholder="تفاصيل المهمة المطلوبة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
+                        <button onclick="assignTask()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إسناد المهمة</button>
+                    </div>
+
+                    <div class="gov-card p-6 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية لعضو</h3>
+                        <select id="assignNoteEmp" class="w-full border rounded p-2 text-xs"></select>
+                        <textarea id="newNoteDesc" placeholder="اكتب الملاحظة الفنية هنا..." class="w-full border rounded p-2 text-xs h-20"></textarea>
+                        <button onclick="assignNote()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold">إرسال الملاحظة</button>
+                    </div>
+                </div>
+
+                <!-- الرسائل الواردة وسجل الحضور -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="gov-card p-6 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-inbox text-sky-600 ml-2"></i>رسائل الأعضاء الواردة</h3>
+                        <div id="adminMessagesList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
+                    </div>
+
+                    <div class="gov-card p-6 rounded-xl border space-y-3">
+                        <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-clipboard-user text-sky-600 ml-2"></i>سجل الحضور والغياب</h3>
+                        <div id="adminAttendanceList" class="space-y-2 max-h-60 overflow-y-auto text-xs"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (منصة رسمية) -->
+    <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-50">
+        <div class="max-w-md mx-auto flex justify-around py-3">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px]">الرئيسية</span>
+            </button>
+            <button onclick="switchTab('employee')" id="nav-employee" class="flex flex-col items-center space-y-1 hover:text-sky-400">
+                <i class="fa-solid fa-id-card text-lg"></i>
+                <span class="text-[10px]">بوابة الاعضاء</span>
+            </button>
+            <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 hover:text-sky-400">
+                <i class="fa-solid fa-user-shield text-lg"></i>
+                <span class="text-[10px]">الإدارة العليا</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Footer (حقوق الطبع والنشر والملكية الكاملة باسم Saloumi) -->
+    <footer class="bg-slate-950 text-slate-500 text-center py-4 text-xs border-t border-slate-800">
+        <p>© ALL RIGHTS RESERVED - DEVELOPED & MANAGED BY <span class="text-sky-400 font-bold tracking-wider">SALOUMI</span> | SCHOOL MEDIA SYSTEM</p>
+    </footer>
+
+    <!-- App Application Script -->
+    <script>
+        // State
+        let currentEmp = null;
+        let siteData = {
+            config: { title: "منصة الإعلام المدرسي", subtitle: "البوابة الرسمية لإدارة الأنشطة الإعلامية", bannerTitle: "مرحباً بكم في منصة التوثيق والإعلام المدرسي" },
+            employees: [
+                { id: '1', name: 'أحمد علي', username: 'ahmed', pass: '1234', role: 'مصور', cardCode: 'IMG-101' },
+                { id: '2', name: 'سارة محمد', username: 'sara', pass: '1234', role: 'كاتب محتوى', cardCode: 'WRT-102' }
+            ],
+            tasks: [
+                { id: 't1', empUsername: 'ahmed', desc: 'تصوير لقطات سينمائية لطابور الصباح اليوم' }
+            ],
+            notes: [
+                { id: 'n1', empUsername: 'ahmed', desc: 'الانتباه لإضاءة الممر الخلفي أثناء التصوير' }
+            ],
+            attendance: [],
+            messages: []
+        };
+
+        // Switch Tabs
+        function switchTab(tabName) {
+            ['home', 'employee', 'admin'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('text-sky-400');
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).classList.add('text-sky-400');
+        }
+
+        // Verify Card Code
+        function verifyCardCode() {
+            const code = document.getElementById('cardCodeInput').value.trim();
+            const resDiv = document.getElementById('cardResult');
+            resDiv.classList.remove('hidden');
+
+            const emp = siteData.employees.find(e => e.cardCode === code);
+            if(emp) {
+                resDiv.className = "p-3 rounded-lg text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
+                resDiv.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> البطاقة معتمدة: <b>${emp.name}</b> (${emp.role})`;
+            } else {
+                resDiv.className = "p-3 rounded-lg text-sm bg-red-100 text-red-800 border border-red-300";
+                resDiv.innerHTML = `<i class="fa-solid fa-circle-xmark ml-1"></i> رمز البطاقة غير مسجل لدينا!`;
+            }
+        }
+
+        // Login Member
+        function loginEmp() {
+            const u = document.getElementById('empUsername').value.trim();
+            const p = document.getElementById('empPass').value.trim();
+            const emp = siteData.employees.find(e => e.username === u && e.pass === p);
+
+            if(emp) {
+                currentEmp = emp;
+                document.getElementById('empLoginForm').classList.add('hidden');
+                document.getElementById('empDashboard').classList.remove('hidden');
+                document.getElementById('empWelcomeName').innerText = emp.name;
+                document.getElementById('empWelcomeRole').innerText = emp.role;
+                
+                document.getElementById('currentUserBadge').classList.remove('hidden');
+                document.getElementById('userNameBadge').innerText = emp.name;
+                document.getElementById('userRoleBadge').innerText = emp.role;
+
+                renderEmpData();
+            } else {
+                alert('اسم المستخدم أو رمز الدخول غير صحيح');
+            }
+        }
+
+        function empLogout() {
+            currentEmp = null;
+            document.getElementById('empLoginForm').classList.remove('hidden');
+            document.getElementById('empDashboard').classList.add('hidden');
+            document.getElementById('currentUserBadge').classList.add('hidden');
+        }
+
+        function renderEmpData() {
+            if(!currentEmp) return;
+            const tasksList = document.getElementById('empTasksList');
+            const empTasks = siteData.tasks.filter(t => t.empUsername === currentEmp.username);
+            tasksList.innerHTML = empTasks.length ? empTasks.map(t => `<div class="p-2 bg-slate-50 border rounded-lg text-slate-700"><i class="fa-regular fa-square-check text-sky-600 ml-1"></i> ${t.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد مهمات حالية</p>';
+
+            const notesList = document.getElementById('empNotesList');
+            const empNotes = siteData.notes.filter(n => n.empUsername === currentEmp.username);
+            notesList.innerHTML = empNotes.length ? empNotes.map(n => `<div class="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-900"><i class="fa-solid fa-triangle-exclamation text-amber-600 ml-1"></i> ${n.desc}</div>`).join('') : '<p class="text-xs text-slate-400">لا توجد ملاحظات جديدة</p>';
+        }
+
+        function recordAttendance() {
+            if(!currentEmp) return;
+            const now = new Date().toLocaleString('ar-SA');
+            siteData.attendance.push({ name: currentEmp.name, role: currentEmp.role, time: now });
+            document.getElementById('attendStatus').innerText = `تم تسجيل الحضور بنجاح في: ${now}`;
+            renderAdminData();
+        }
+
+        function sendMessageToAdmin() {
+            const txt = document.getElementById('msgToAdmin').value.trim();
+            if(!txt) return;
+            siteData.messages.push({ sender: currentEmp.name, msg: txt, time: new Date().toLocaleTimeString('ar-SA') });
+            document.getElementById('msgToAdmin').value = '';
+            alert('تم إرسال رسالتك إلى لوحة الإدارة');
+            renderAdminData();
+        }
+
+        // Admin Login (Pass: Ss@10203040)
+        function loginAdmin() {
+            const p = document.getElementById('adminPassInput').value;
+            if(p === 'Ss@10203040') {
+                document.getElementById('adminLoginForm').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                
+                // Set current values in inputs
+                document.getElementById('editHeaderTitle').value = siteData.config.title;
+                document.getElementById('editHeaderSub').value = siteData.config.subtitle;
+                document.getElementById('editBannerTitle').value = siteData.config.bannerTitle || '';
+
+                renderAdminData();
+            } else {
+                alert('كلمة مرور الإدارة غير صحيحة!');
+            }
+        }
+
+        function adminLogout() {
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+        }
+
+        function renderAdminData() {
+            const empSelectHTML = siteData.employees.map(e => `<option value="${e.username}">${e.name} (${e.role})</option>`).join('');
+            document.getElementById('assignTaskEmp').innerHTML = empSelectHTML;
+            document.getElementById('assignNoteEmp').innerHTML = empSelectHTML;
+
+            document.getElementById('employeesTableBody').innerHTML = siteData.employees.map(e => `
+                <tr class="border-b">
+                    <td class="p-2 border font-bold">${e.name}</td>
+                    <td class="p-2 border">${e.username}</td>
+                    <td class="p-2 border text-sky-700">${e.role}</td>
+                    <td class="p-2 border font-mono">${e.cardCode}</td>
+                    <td class="p-2 border"><button onclick="deleteEmp('${e.id}')" class="text-red-600 hover:underline"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('adminMessagesList').innerHTML = siteData.messages.length ? siteData.messages.map(m => `
+                <div class="p-2 bg-sky-50 border border-sky-200 rounded"><span class="font-bold text-sky-900">${m.sender}:</span> ${m.msg} <span class="text-[10px] text-slate-400 font-mono">(${m.time})</span></div>
+            `).join('') : '<p class="text-slate-400">لا توجد رسائل</p>';
+
+            document.getElementById('adminAttendanceList').innerHTML = siteData.attendance.length ? siteData.attendance.map(a => `
+                <div class="p-2 bg-emerald-50 border border-emerald-200 rounded"><span class="font-bold">${a.name}</span> (${a.role}) - <span class="text-[10px] text-emerald-700">${a.time}</span></div>
+            `).join('') : '<p class="text-slate-400">لا يوجد تسجيل حضور حتى الآن</p>';
+        }
+
+        function addEmployee() {
+            const name = document.getElementById('newEmpName').value.trim();
+            const username = document.getElementById('newEmpUser').value.trim();
+            const pass = document.getElementById('newEmpPass').value.trim();
+            const role = document.getElementById('newEmpRole').value;
+            const cardCode = document.getElementById('newEmpCardCode').value.trim();
+
+            if(!name || !username || !pass) return alert('الرجاء تعبئة الحقول الأساسية');
+
+            siteData.employees.push({ id: Date.now().toString(), name, username, pass, role, cardCode: cardCode || `CARD-${Math.floor(100+Math.random()*900)}` });
+            renderAdminData();
+            alert('تمت إضافة العضو بنجاح');
+        }
+
+        function deleteEmp(id) {
+            siteData.employees = siteData.employees.filter(e => e.id !== id);
+            renderAdminData();
+        }
+
+        function assignTask() {
+            const empUsername = document.getElementById('assignTaskEmp').value;
+            const desc = document.getElementById('newTaskDesc').value.trim();
+            if(!desc) return;
+            siteData.tasks.push({ id: Date.now().toString(), empUsername, desc });
+            document.getElementById('newTaskDesc').value = '';
+            alert('تم إسناد المهمة');
+        }
+
+        function assignNote() {
+            const empUsername = document.getElementById('assignNoteEmp').value;
+            const desc = document.getElementById('newNoteDesc').value.trim();
+            if(!desc) return;
+            siteData.notes.push({ id: Date.now().toString(), empUsername, desc });
+            document.getElementById('newNoteDesc').value = '';
+            alert('تم إرسال الملاحظة الفنية');
+        }
+
+        // حفظ وتحديث اسم المنصة بالكامل
+        function saveSiteConfig() {
+            const title = document.getElementById('editHeaderTitle').value.trim();
+            const sub = document.getElementById('editHeaderSub').value.trim();
+            const banner = document.getElementById('editBannerTitle').value.trim();
+
+            if(title) {
+                siteData.config.title = title;
+                document.getElementById('headerTitle').innerText = title;
+                document.getElementById('pageTitle').innerText = title + " | Saloumi Platform";
+            }
+            if(sub) {
+                siteData.config.subtitle = sub;
+                document.getElementById('headerSubtitle').innerText = sub;
+            }
+            if(banner) {
+                siteData.config.bannerTitle = banner;
+                document.getElementById('mainBannerTitle').innerText = banner;
+            }
+
+            alert('تم تحديث اسم المنصة والعناوين بنجاح!');
+        }
+    </script>
+</body>
+</html>
