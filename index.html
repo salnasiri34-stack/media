@@ -36,7 +36,16 @@
         onValue(ref(db, 'siteData'), (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                siteData = data;
+                // دمج البيانات بحذر لتجنب إعادة ضبط الحقول الفارغة
+                siteData.config = data.config || siteData.config;
+                siteData.employees = data.employees || siteData.employees;
+                siteData.socials = data.socials || siteData.socials;
+                siteData.tasks = data.tasks || siteData.tasks;
+                siteData.notes = data.notes || siteData.notes;
+                siteData.attendance = data.attendance || siteData.attendance;
+                siteData.messages = data.messages || siteData.messages;
+                siteData.publicFeedback = data.publicFeedback || siteData.publicFeedback;
+
                 renderPublicTeam();
                 renderSocialLinks();
                 updateSiteHeaderUI();
@@ -70,7 +79,7 @@
             </div>
 
             <div class="flex items-center space-x-2 space-x-reverse">
-                <button onclick="toggleCardSearchModal()" title="البحث برقم البطاقة" class="bg-slate-800 hover:bg-sky-600 text-white p-2.5 rounded-full border border-slate-700 text-sm transition cursor-pointer relative z-50">
+                <button type="button" onclick="toggleCardSearchModal()" title="البحث برقم البطاقة" class="bg-slate-800 hover:bg-sky-600 text-white p-2.5 rounded-full border border-slate-700 text-sm transition cursor-pointer relative z-50">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
                 <div id="currentUserBadge" class="hidden text-sm bg-slate-800 border border-slate-700 px-3 py-1 rounded-full text-slate-300">
@@ -133,7 +142,7 @@
                     <label class="block text-xs font-semibold mb-1">كلمة المرور أو رمز الدخول السريع</label>
                     <input type="password" id="empPass" placeholder="أدخل رمزك السريع..." class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
-                <button onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2.5 rounded-lg font-bold hover:bg-sky-700 cursor-pointer transition">تسجيل الدخول</button>
+                <button type="button" onclick="loginEmp()" class="w-full bg-sky-600 text-white py-2.5 rounded-lg font-bold hover:bg-sky-700 cursor-pointer transition">تسجيل الدخول</button>
             </div>
 
             <div id="setQuickPinModal" class="hidden max-w-md mx-auto gov-card p-8 rounded-xl border space-y-4">
@@ -146,7 +155,7 @@
                     <label class="block text-xs font-semibold mb-1">اختر رمز الدخول السريع</label>
                     <input type="password" id="newQuickPinInput" placeholder="أدخل رمزك الجديد..." class="w-full border rounded-lg px-3 py-2 text-sm text-center font-mono outline-none focus:ring-2 focus:ring-amber-500">
                 </div>
-                <button onclick="saveUserQuickPin()" class="w-full bg-amber-600 text-white py-2.5 rounded-lg font-bold hover:bg-amber-700 cursor-pointer transition">حفظ الرمز والدخول</button>
+                <button type="button" onclick="saveUserQuickPin()" class="w-full bg-amber-600 text-white py-2.5 rounded-lg font-bold hover:bg-amber-700 cursor-pointer transition">حفظ الرمز والدخول</button>
             </div>
 
             <div id="empDashboard" class="hidden space-y-6">
@@ -155,7 +164,7 @@
                         <h2 class="text-xl font-bold" id="empWelcomeName">أهلاً بك</h2>
                         <p class="text-xs text-slate-500">التخصص: <span id="empWelcomeRole" class="font-semibold text-sky-600"></span></p>
                     </div>
-                    <button onclick="empLogout()" class="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100"><i class="fa-solid fa-sign-out-alt ml-1"></i>خروج</button>
+                    <button type="button" onclick="empLogout()" class="text-xs text-red-600 bg-red-50 px-3 py-2 rounded-lg border border-red-200 cursor-pointer hover:bg-red-100"><i class="fa-solid fa-sign-out-alt ml-1"></i>خروج</button>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -172,14 +181,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-calendar-check ml-2"></i>تسجيل الحضور اليومي</h4>
-                        <button onclick="recordAttendance()" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 text-sm cursor-pointer transition">تسجيل حضوري الآن</button>
+                        <button type="button" onclick="recordAttendance()" class="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold hover:bg-emerald-700 text-sm cursor-pointer transition">تسجيل حضوري الآن</button>
                         <p id="attendStatus" class="text-xs text-center mt-2 text-slate-500"></p>
                     </div>
 
                     <div class="gov-card p-5 rounded-xl border">
                         <h4 class="font-bold text-md text-sky-700 border-b pb-2 mb-3"><i class="fa-solid fa-paper-plane ml-2"></i>مراسلة الإدارة</h4>
                         <textarea id="msgToAdmin" placeholder="اكتب استفسارك أو اقتراحك..." class="w-full border rounded-lg p-2 text-xs h-20 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
-                        <button onclick="sendMessageToAdmin()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold text-xs hover:bg-slate-900 mt-2 cursor-pointer transition">إرسال للمسؤول</button>
+                        <button type="button" onclick="sendMessageToAdmin()" class="w-full bg-slate-800 text-white py-2 rounded-lg font-bold text-xs hover:bg-slate-900 mt-2 cursor-pointer transition">إرسال للمسؤول</button>
                     </div>
                 </div>
             </div>
@@ -193,7 +202,7 @@
                     <label class="block text-xs font-semibold mb-1">كلمة المرور الخاصة</label>
                     <input type="password" id="adminPassInput" class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500">
                 </div>
-                <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-2.5 rounded-lg font-bold hover:bg-black cursor-pointer transition">دخول اللوحة</button>
+                <button type="button" onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-2.5 rounded-lg font-bold hover:bg-black cursor-pointer transition">دخول اللوحة</button>
             </div>
 
             <div id="adminDashboard" class="hidden space-y-6">
@@ -202,7 +211,7 @@
                         <h2 class="text-xl font-bold">لوحة الإدارة الكاملة (sulaiman alnasiri)</h2>
                         <p class="text-xs text-slate-400">إدارة الأعضاء، السجلات، الصور، الحسابات والملاحظات العامة</p>
                     </div>
-                    <button onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg cursor-pointer">خروج</button>
+                    <button type="button" onclick="adminLogout()" class="text-xs bg-red-600/30 border border-red-500/50 text-red-300 px-3 py-2 rounded-lg cursor-pointer">خروج</button>
                 </div>
 
                 <div class="gov-card p-6 rounded-xl border space-y-4">
@@ -236,7 +245,7 @@
                         </div>
                     </div>
 
-                    <button onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-sky-700">حفظ التغييرات والتحديث</button>
+                    <button type="button" onclick="saveSiteConfig()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-sky-700">حفظ التغييرات والتحديث</button>
                 </div>
 
                 <div class="gov-card p-6 rounded-xl border space-y-4">
@@ -252,7 +261,7 @@
                             <input type="file" id="empPhotoFileInput" accept="image/*" class="w-full text-xs">
                         </div>
                     </div>
-                    <button onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-emerald-700">+ إضافة العضو</button>
+                    <button type="button" onclick="addEmployee()" class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer hover:bg-emerald-700">+ إضافة العضو</button>
                 </div>
 
                 <div class="gov-card p-6 rounded-xl border space-y-4">
@@ -281,7 +290,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                         <input type="text" id="newSocialName" placeholder="اسم المنصة (TikTok, Snapchat...)" class="border rounded p-2">
                         <input type="text" id="newSocialUrl" placeholder="رابط الحساب (https://...)" class="border rounded p-2">
-                        <button onclick="addSocialLink()" class="bg-sky-600 text-white rounded p-2 font-bold cursor-pointer">+ إضافة الحساب</button>
+                        <button type="button" onclick="addSocialLink()" class="bg-sky-600 text-white rounded p-2 font-bold cursor-pointer">+ إضافة الحساب</button>
                     </div>
                     <div id="adminSocialList" class="flex flex-wrap gap-2 text-xs"></div>
                 </div>
@@ -291,14 +300,14 @@
                         <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-tasks text-sky-600 ml-2"></i>إسناد مهمة جديدة</h3>
                         <select id="assignTaskEmp" class="w-full border rounded p-2 text-xs"></select>
                         <textarea id="newTaskDesc" placeholder="تفاصيل المهمة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
-                        <button onclick="assignTask()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">إسناد المهمة</button>
+                        <button type="button" onclick="assignTask()" class="bg-sky-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">إسناد المهمة</button>
                     </div>
 
                     <div class="gov-card p-6 rounded-xl border space-y-3">
                         <h3 class="font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-comment-medical text-sky-600 ml-2"></i>إضافة ملاحظة فنية لعضو</h3>
                         <select id="assignNoteEmp" class="w-full border rounded p-2 text-xs"></select>
                         <textarea id="newNoteDesc" placeholder="اكتب الملاحظة..." class="w-full border rounded p-2 text-xs h-20"></textarea>
-                        <button onclick="assignNote()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">إرسال الملاحظة</button>
+                        <button type="button" onclick="assignNote()" class="bg-amber-600 text-white px-4 py-2 rounded-lg text-xs font-bold cursor-pointer">إرسال الملاحظة</button>
                     </div>
                 </div>
 
@@ -337,7 +346,7 @@
                     <label class="block text-xs font-semibold mb-1">الملاحظة أو الاقتراح</label>
                     <textarea id="publicFeedbackText" placeholder="اكتب ملاحظتك هنا بكل حرية..." class="w-full border rounded-lg p-3 text-xs h-28 outline-none focus:ring-2 focus:ring-sky-500"></textarea>
                 </div>
-                <button onclick="submitPublicFeedback()" class="w-full bg-sky-600 text-white py-2.5 rounded-lg font-bold hover:bg-sky-700 cursor-pointer transition">إرسال الملاحظة للإدارة</button>
+                <button type="button" onclick="submitPublicFeedback()" class="w-full bg-sky-600 text-white py-2.5 rounded-lg font-bold hover:bg-sky-700 cursor-pointer transition">إرسال الملاحظة للإدارة</button>
             </div>
         </section>
 
@@ -346,7 +355,7 @@
     <!-- Modal البحث برقم البطاقة الشخصية -->
     <div id="cardSearchModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-filter blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white max-w-md w-full rounded-2xl p-6 space-y-4 shadow-2xl relative">
-            <button onclick="toggleCardSearchModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="toggleCardSearchModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-600 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
             <div class="text-center space-y-2">
                 <div class="w-12 h-12 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fa-solid fa-id-card"></i></div>
                 <h3 class="font-bold text-lg">التحقق السريع من رمز البطاقة</h3>
@@ -354,7 +363,7 @@
             </div>
             <div class="flex gap-2">
                 <input type="text" id="cardCodeInput" placeholder="رمز البطاقة..." class="flex-1 border rounded-lg px-3 py-2 text-center font-mono outline-none focus:ring-2 focus:ring-sky-500 text-sm">
-                <button onclick="verifyCardCode()" class="bg-sky-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-sky-700 cursor-pointer">بحث</button>
+                <button type="button" onclick="verifyCardCode()" class="bg-sky-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-sky-700 cursor-pointer">بحث</button>
             </div>
             <div id="cardResult" class="hidden p-3 rounded-lg text-sm text-center"></div>
         </div>
@@ -363,19 +372,19 @@
     <!-- Bottom Navigation Bar -->
     <nav class="bg-slate-900 border-t border-slate-800 text-slate-400 sticky bottom-0 z-40">
         <div class="max-w-lg mx-auto flex justify-around py-3">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400 cursor-pointer">
+            <button type="button" onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center space-y-1 text-sky-400 cursor-pointer">
                 <i class="fa-solid fa-house text-lg"></i>
                 <span class="text-[10px]">الرئيسية</span>
             </button>
-            <button onclick="switchTab('employee')" id="nav-employee" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
+            <button type="button" onclick="switchTab('employee')" id="nav-employee" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
                 <i class="fa-solid fa-id-card text-lg"></i>
                 <span class="text-[10px]">بوابة الأعضاء</span>
             </button>
-            <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
+            <button type="button" onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
                 <i class="fa-solid fa-user-shield text-lg"></i>
                 <span class="text-[10px]">الإدارة العليا</span>
             </button>
-            <button onclick="switchTab('feedback')" id="nav-feedback" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
+            <button type="button" onclick="switchTab('feedback')" id="nav-feedback" class="flex flex-col items-center space-y-1 hover:text-sky-400 cursor-pointer">
                 <i class="fa-solid fa-comment-dots text-lg"></i>
                 <span class="text-[10px]">الملاحظات</span>
             </button>
@@ -467,7 +476,7 @@
         function renderPublicTeam() {
             const grid = document.getElementById('publicTeamGrid');
             if(!grid) return;
-            if(!siteData.employees.length) {
+            if(!siteData.employees || !siteData.employees.length) {
                 grid.innerHTML = '<p class="text-slate-400 text-xs">لا يوجد أعضاء حالياً</p>';
                 return;
             }
@@ -504,7 +513,7 @@
             const code = input.value.trim();
             resDiv.classList.remove('hidden');
 
-            const emp = siteData.employees.find(e => e.cardCode === code);
+            const emp = (siteData.employees || []).find(e => e.cardCode === code);
             if(emp) {
                 resDiv.className = "p-3 rounded-lg text-sm bg-emerald-100 text-emerald-800 border border-emerald-300";
                 resDiv.innerHTML = `<i class="fa-solid fa-circle-check ml-1"></i> العضو: <b>${emp.name}</b> (${emp.role})`;
@@ -523,9 +532,9 @@
             
             let emp = null;
             if(u !== "") {
-                emp = siteData.employees.find(e => e.username === u && (e.pass === p || e.quickPin === p));
+                emp = (siteData.employees || []).find(e => e.username === u && (e.pass === p || e.quickPin === p));
             } else {
-                emp = siteData.employees.find(e => e.quickPin === p);
+                emp = (siteData.employees || []).find(e => e.quickPin === p);
             }
 
             if(emp) {
@@ -661,7 +670,7 @@
         }
 
         function renderAdminData() {
-            const empSelectHTML = siteData.employees.map(e => `<option value="${e.username}">${e.name} (${e.role})</option>`).join('');
+            const empSelectHTML = (siteData.employees || []).map(e => `<option value="${e.username}">${e.name} (${e.role})</option>`).join('');
             const taskEmp = document.getElementById('assignTaskEmp');
             const noteEmp = document.getElementById('assignNoteEmp');
             if(taskEmp) taskEmp.innerHTML = empSelectHTML;
@@ -669,7 +678,7 @@
 
             const tableBody = document.getElementById('employeesTableBody');
             if(tableBody) {
-                tableBody.innerHTML = siteData.employees.map(e => `
+                tableBody.innerHTML = (siteData.employees || []).map(e => `
                     <tr class="border-b">
                         <td class="p-2 border text-center">
                             ${e.photo ? `<img src="${e.photo}" class="w-8 h-8 rounded-full object-cover mx-auto">` : `<span class="text-slate-400">-</span>`}
@@ -680,7 +689,7 @@
                         <td class="p-2 border font-mono font-bold text-amber-700 bg-amber-50">${e.quickPin || 'لم يعين بعد'}</td>
                         <td class="p-2 border text-sky-700 font-semibold">${e.role}</td>
                         <td class="p-2 border font-mono">${e.cardCode || '-'}</td>
-                        <td class="p-2 border"><button onclick="deleteEmp('${e.id}')" class="text-red-600 hover:underline cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
+                        <td class="p-2 border"><button type="button" onclick="deleteEmp('${e.id}')" class="text-red-600 hover:underline cursor-pointer"><i class="fa-solid fa-trash"></i></button></td>
                     </tr>
                 `).join('');
             }
@@ -690,7 +699,7 @@
                 socialList.innerHTML = (siteData.socials || []).map(s => `
                     <div class="bg-slate-100 border px-3 py-1 rounded flex items-center space-x-2 space-x-reverse">
                         <span><b>${s.name}:</b> ${s.url}</span>
-                        <button onclick="deleteSocial('${s.id}')" class="text-red-600 font-bold ml-1 cursor-pointer">×</button>
+                        <button type="button" onclick="deleteSocial('${s.id}')" class="text-red-600 font-bold ml-1 cursor-pointer">×</button>
                     </div>
                 `).join('');
             }
@@ -729,6 +738,7 @@
 
             const photoBase64 = await readFileAsBase64(photoFile);
 
+            if(!siteData.employees) siteData.employees = [];
             siteData.employees.push({ 
                 id: Date.now().toString(), 
                 name, 
